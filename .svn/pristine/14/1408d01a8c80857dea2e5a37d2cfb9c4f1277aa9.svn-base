@@ -1,0 +1,635 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using HomotorDepotMgr.Utility;
+using SCAN.Scanner2D;
+using System.Data.SQLite;
+using System.Reflection;
+using System.Collections;
+
+namespace HomotorDepotMgr
+{
+    public partial class CaseDetailMgr : Form
+    {
+        //public delegate void CaseDetailMgrWindowBack();
+        //public event CaseDetailMgrWindowBack CaseDetailMgrWindowBackDegelate;
+
+        Hook hkCaseDetailMgr = new Hook("hkCaseDetailMgr");
+        SQLiteDBHelper db = new SQLiteDBHelper();
+        MsgDialog msg = new MsgDialog();
+
+        private string caseNumberID = string.Empty;
+        private string barcode = string.Empty;
+        private string caseNo = string.Empty;
+
+        public CaseDetailMgr(string caseNumberID, string barcode, string caseNo)
+        {
+            InitializeComponent();
+            this.caseNumberID = caseNumberID;
+            this.barcode = barcode;
+            this.caseNo = caseNo;
+            this.Text = caseNo + "号配件明细";
+            hkCaseDetailMgr.KeyHandlerDelegate += new Hook.KeyHandler(hkCaseDetailMgr_KeyHandlerDelegate);
+            hkCaseDetailMgr.Start();
+            ReloadCaseDetailData(caseNumberID);
+        }
+
+        int hkCaseDetailMgr_KeyHandlerDelegate(int vkCode, string clsName)
+        {
+            int result = 0;
+            if (clsName.Equals("hkCaseDetailMgr"))
+            {
+                switch (vkCode)
+                {
+                    case VirtualKey.VK_F1:
+                        CaseDetailModelAddHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_F2:
+                        CaseDetailBarcodeAddHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_BACK:
+                        CaseDetailDelHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_0:
+                        KeyPressHandler("0");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_1:
+                        KeyPressHandler("1");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_2:
+                        KeyPressHandler("2");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_3:
+                        KeyPressHandler("3");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_4:
+                        KeyPressHandler("4");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_5:
+                        KeyPressHandler("5");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_6:
+                        KeyPressHandler("6");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_7:
+                        KeyPressHandler("7");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_8:
+                        KeyPressHandler("8");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_9:
+                        KeyPressHandler("9");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_ENTER:
+                        CaseDetailEditHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_ESCAPE:
+                        hkCaseDetailMgr.Stop();
+                        //返回去箱号管理界面，刷新箱号管理的列表
+                        //CaseDetailMgrWindowBackDegelate();
+                        Cls_Message.SendMessage("箱号管理", "CaseDetailMgr");
+                        this.Close();
+                        result = -1;
+                        break;
+                }
+            }
+            return result;
+        }
+
+        #region 通过条码添加配件
+        public void CaseDetailBarcodeAddHandler()
+        {
+            hkCaseDetailMgr.Stop();
+            CaseDetailMgrBarcodeAdd frm = new CaseDetailMgrBarcodeAdd(this.caseNumberID, this.caseNo);
+            frm.GetCaseDetailMgrBarcodeAddDelegate += new CaseDetailMgrBarcodeAdd.GetCaseDetailMgrBarcodeAdd(frm_GetCaseDetailMgrBarcodeAddDelegate);
+            frm.Show();
+        }
+
+        void frm_GetCaseDetailMgrBarcodeAddDelegate(int selection)
+        {
+            hkCaseDetailMgr.Start();
+        }
+        #endregion
+
+        #region 通过型号添加配件
+        public void CaseDetailModelAddHandler()
+        {
+            hkCaseDetailMgr.Stop();
+            CaseDetailMgrModelAddSearch frm = new CaseDetailMgrModelAddSearch(this.caseNumberID, this.caseNo);
+            frm.GetCaseDetailMgrModelAddSearchDelegate += new CaseDetailMgrModelAddSearch.GetCaseDetailMgrModelAddSearch(frm_GetCaseDetailMgrModelAddSearchDelegate);
+            frm.Show();
+        }
+
+        void frm_GetCaseDetailMgrModelAddSearchDelegate(int selection)
+        {
+            hkCaseDetailMgr.Start();
+        }
+        #endregion
+
+
+        private void CaseDetailMgr_Activated(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent += new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Enable();//启用扫描
+        }
+
+        private void CaseDetailMgr_Deactivate(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent -= new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Disable();//禁用扫描
+        }
+
+        void scanner_OnScanedEvent(Scanner.CodeInfo obj)
+        {
+            if (this.InvokeRequired)
+            {
+                Action<Scanner.CodeInfo> delegateFun = new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+                this.Invoke(delegateFun, obj);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(obj.barcode))
+                {
+                    AddUpdateCaseDetail(obj.barcode);
+                }
+            }
+        }
+
+        public void ReloadCaseDetailData(string caseNumerID)
+        {
+            string sql = @"select (select COUNT(distinct a2.id) FROM  CaseNumberDetail a2 WHERE a2.id <= a.id and a2.CaseNumberID=@CaseNumberID) as 序号,
+                b.ProdName as 名称,b.Model as 型号,b.Num as 应发,a.Num as 数量,a.Barcode as 条码,a.ID from CaseNumberDetail a 
+                join FromERPDetail b on a.ProdID=b.ProdID where a.CaseNumberID=@CaseNumberID order by a.id asc,a.CreateTime asc";
+            SQLiteParameter[] parameters = null;
+            if (string.IsNullOrEmpty(caseNumerID))
+            {
+                parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@CaseNumberID", this.caseNumberID)
+                };
+            }
+            else
+            {
+                parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@CaseNumberID", caseNumerID)
+                };
+            }
+            try
+            {
+                DataTable dt = db.ExecuteDataTable(sql, parameters);
+                DataGridTableStyle ts = new DataGridTableStyle();
+                ts.MappingName = dt.TableName;
+                DataGridColumnStyle SXHColStyle = new DataGridTextBoxColumn();
+                SXHColStyle.MappingName = "序号";
+                SXHColStyle.HeaderText = "序号";
+                SXHColStyle.Width = 30;
+                ts.GridColumnStyles.Add(SXHColStyle);
+                DataGridColumnStyle MCColStyle = new DataGridTextBoxColumn();
+                MCColStyle.MappingName = "名称";
+                MCColStyle.HeaderText = "名称";
+                MCColStyle.Width = 70;
+                ts.GridColumnStyles.Add(MCColStyle);
+                DataGridColumnStyle XHColStyle = new DataGridTextBoxColumn();
+                XHColStyle.MappingName = "型号";
+                XHColStyle.HeaderText = "型号";
+                XHColStyle.Width = 60;
+                ts.GridColumnStyles.Add(XHColStyle);
+                DataGridColumnStyle YFColStyle = new DataGridTextBoxColumn();
+                YFColStyle.MappingName = "应发";
+                YFColStyle.HeaderText = "应发";
+                YFColStyle.Width = 30;
+                ts.GridColumnStyles.Add(YFColStyle);
+                DataGridColumnStyle SLColStyle = new DataGridTextBoxColumn();
+                SLColStyle.MappingName = "数量";
+                SLColStyle.HeaderText = "数量";
+                SLColStyle.Width = 30;
+                ts.GridColumnStyles.Add(SLColStyle);
+                DataGridColumnStyle TMColStyle = new DataGridTextBoxColumn();
+                TMColStyle.MappingName = "条码";
+                TMColStyle.HeaderText = "条码";
+                TMColStyle.Width = 0;
+                ts.GridColumnStyles.Add(TMColStyle);
+                DataGridColumnStyle XIDColStyle = new DataGridTextBoxColumn();
+                XIDColStyle.MappingName = "ID";
+                XIDColStyle.HeaderText = "ID";
+                XIDColStyle.Width = 0;
+                ts.GridColumnStyles.Add(XIDColStyle);
+                CreateNewCaseDetailGrid();
+                dgCaseDetailList.TableStyles.Add(ts);
+                dgCaseDetailList.DataSource = null;
+                dgCaseDetailList.DataSource = dt;
+                dgCaseDetailList.RowHeadersVisible = false;
+                AutoSizeTable(dgCaseDetailList);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    dgCaseDetailList.Select(0);
+                }
+                dgCaseDetailList.Invalidate();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void CreateNewCaseDetailGrid()
+        {
+            this.Controls.Remove(this.dgCaseDetailList);
+            this.dgCaseDetailList = new System.Windows.Forms.DataGrid();
+            this.dgCaseDetailList.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.dgCaseDetailList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgCaseDetailList.Location = new System.Drawing.Point(0, 0);
+            this.dgCaseDetailList.Name = "dgCaseDetailList";
+            this.dgCaseDetailList.Size = new System.Drawing.Size(238, 270);
+            this.dgCaseDetailList.TabIndex = 0;
+            this.dgCaseDetailList.CurrentCellChanged += new System.EventHandler(this.dgCaseDetailList_CurrentCellChanged);
+            this.dgCaseDetailList.GotFocus += new System.EventHandler(this.dgCaseDetailList_GotFocus);
+            this.Controls.Add(this.dgCaseDetailList);
+            //激活窗口，并把焦点返回窗口
+            this.Activate();
+            this.Focus();
+        }
+
+        #region 设置高度
+        //public void SetGridDefaultRowHeight(DataGrid dg, int cy)
+        //{
+        //    FieldInfo fi = dg.GetType().GetField("m_cyRow",
+        //                    BindingFlags.NonPublic |
+        //                    BindingFlags.Static |
+        //                    BindingFlags.Instance);
+        //    fi.SetValue(dg, cy);
+        //    dg.GetType().GetMethod("_DataRebind",
+        //                     BindingFlags.NonPublic |
+        //                     BindingFlags.Static |
+        //                     BindingFlags.Instance).Invoke(dg, new object[] { });
+        //}
+
+        public void SetGridRowHeight(DataGrid dg, int nRow, int cy)
+        {
+            ArrayList arrRows = (ArrayList)dg.GetType().GetField("m_rlrow",
+                            BindingFlags.NonPublic |
+                            BindingFlags.Static |
+                            BindingFlags.Instance).GetValue(dg);
+            object row = arrRows[nRow];
+            row.GetType().GetField("m_cy",
+                             BindingFlags.NonPublic |
+                             BindingFlags.Static |
+                             BindingFlags.Instance).SetValue(row, cy);
+        }
+
+        public void AutoSizeTable(DataGrid dgData)
+        {
+            int numCols = dgData.TableStyles[0].GridColumnStyles.Count;
+            for (int i = 0; i < numCols; i++)
+            {
+                if (dgData.TableStyles[0].GridColumnStyles[i].MappingName.Equals("名称"))
+                {
+                    AutoSizeCol(dgData, i);
+                }
+            }
+        }
+
+        private void AutoSizeCol(DataGrid dgData, int colIndex)
+        {
+            int rowNums = ((DataTable)dgData.DataSource).Rows.Count;
+            Byte[] myByte = System.Text.Encoding.Default.GetBytes(dgData.TableStyles[0].GridColumnStyles[colIndex].HeaderText);
+            int textCount = myByte.Length;
+            int tempCount = 0;
+            for (int i = 0; i < rowNums; i++)
+            {
+                if (dgData[i, colIndex] != null)
+                {
+                    myByte = System.Text.Encoding.Default.GetBytes(dgData[i, colIndex].ToString().Trim());
+                    tempCount = myByte.Length;
+                    if (tempCount > textCount)
+                    {
+                        int factor = tempCount / textCount;
+                        if (tempCount % textCount > 0)
+                        {
+                            factor++;
+                        }
+                        SetGridRowHeight(dgData, i, factor * 7);
+                    }
+                }
+            }
+        }
+        #endregion
+
+        #region 新增修改
+        public void AddUpdateCaseDetail(string barcode)
+        {
+            try
+            {
+                string sql = string.Empty;
+                List<SQLiteParameter> parameters = new List<SQLiteParameter>();
+                //国际商品码
+                sql = @"select * from FromERPDetail where BoxBarcode=@BoxBarcode";
+                parameters = new List<SQLiteParameter>() {
+                    new SQLiteParameter("@BoxBarcode", barcode)
+                };
+                //处理Code128C码奇数位前面补零的问题
+                sql += "  or BoxBarcode=@FormatBoxBarcode ";
+                parameters.Add(new SQLiteParameter("@FormatBoxBarcode", barcode.Substring(1)));
+
+                DataTable partsDt = db.ExecuteDataTable(sql, parameters.ToArray());
+                if (partsDt != null && partsDt.Rows.Count > 0)
+                {
+                    hkCaseDetailMgr.Stop();
+                    CaseDetailMgrEdit editFrm = new CaseDetailMgrEdit(partsDt.Rows[0]["ProdName"].ToString(), partsDt.Rows[0]["Model"].ToString(),
+                        partsDt.Rows[0]["Num"].ToString(), partsDt.Rows[0]["NormNum"].ToString(), partsDt.Rows[0]["Barcode"].ToString(), this.caseNumberID, false);
+                    editFrm.GetCaseDetailEditDelegate += new CaseDetailMgrEdit.GetCaseDetailEdit(editFrm_GetCaseDetailEditDelegate);
+                    editFrm.Show();
+                }
+                else
+                {
+                    if (barcode.Contains("-"))
+                    {
+                        //件码-数量
+                        string[] infoArray = barcode.Split(new char[] { '-' });
+                        sql = @"select * from FromERPDetail where Barcode=@Barcode";
+                        parameters = new List<SQLiteParameter>() {
+                            new SQLiteParameter("@Barcode", infoArray[0])
+                        };
+                        //处理Code128C码奇数位前面补零的问题
+                        sql += "  or Barcode=@FormatBarcode ";
+                        parameters.Add(new SQLiteParameter("@FormatBarcode", infoArray[0].Substring(1)));
+
+                        DataTable dtFirst = db.ExecuteDataTable(sql, parameters.ToArray());
+                        if (dtFirst != null && dtFirst.Rows.Count > 0)
+                        {
+                            hkCaseDetailMgr.Stop();
+                            CaseDetailMgrEdit editFrm = new CaseDetailMgrEdit(dtFirst.Rows[0]["ProdName"].ToString(), dtFirst.Rows[0]["Model"].ToString(),
+                                dtFirst.Rows[0]["Num"].ToString(), infoArray[1], dtFirst.Rows[0]["Barcode"].ToString(), this.caseNumberID, false);
+                            editFrm.GetCaseDetailEditDelegate += new CaseDetailMgrEdit.GetCaseDetailEdit(editFrm_GetCaseDetailEditDelegate);
+                            editFrm.Show();
+                        }
+                        else
+                        {
+                            msg.ShowMessage("该配件不在发货单中", 1);
+                        }
+                    }
+                    else
+                    {
+                        //自编条码
+                        sql = @"select * from FromERPDetail where Barcode=@Barcode";
+                        parameters = new List<SQLiteParameter>() {
+                            new SQLiteParameter("@Barcode", barcode)
+                        };
+                        //处理Code128C码奇数位前面补零的问题
+                        sql += "  or Barcode=@FormatBarcode ";
+                        parameters.Add(new SQLiteParameter("@FormatBarcode", barcode.Substring(1)));
+
+                        DataTable dtSecond = db.ExecuteDataTable(sql, parameters.ToArray());
+                        if (dtSecond != null && dtSecond.Rows.Count > 0)
+                        {
+                            hkCaseDetailMgr.Stop();
+                            if (dtSecond.Rows[0]["bJianMaInBox"].ToString().Equals("True"))
+                            {
+                                CaseDetailMgrEdit editFrm = new CaseDetailMgrEdit(dtSecond.Rows[0]["ProdName"].ToString(), dtSecond.Rows[0]["Model"].ToString(),
+                                    dtSecond.Rows[0]["Num"].ToString(), dtSecond.Rows[0]["NormNum"].ToString(), dtSecond.Rows[0]["Barcode"].ToString(), this.caseNumberID, false);
+                                editFrm.GetCaseDetailEditDelegate += new CaseDetailMgrEdit.GetCaseDetailEdit(editFrm_GetCaseDetailEditDelegate);
+                                editFrm.Show();
+                            }
+                            else
+                            {
+                                CaseDetailMgrEdit editFrm = new CaseDetailMgrEdit(dtSecond.Rows[0]["ProdName"].ToString(), dtSecond.Rows[0]["Model"].ToString(),
+                                    dtSecond.Rows[0]["Num"].ToString(), "1", dtSecond.Rows[0]["Barcode"].ToString(), this.caseNumberID, false);
+                                editFrm.GetCaseDetailEditDelegate += new CaseDetailMgrEdit.GetCaseDetailEdit(editFrm_GetCaseDetailEditDelegate);
+                                editFrm.Show();
+                            }
+                        }
+                        else
+                        {
+                            msg.ShowMessage("该配件不在发货单中", 1);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        #endregion
+
+        #region 删除
+        public void CaseDetailDelHandler()
+        {
+            DataTable dt = (DataTable)dgCaseDetailList.DataSource;
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                hkCaseDetailMgr.Stop();
+                MsgBox detailMsgBox = new MsgBox("是否确认要删除该明细？", "警告", 3);
+                detailMsgBox.ConfirmSelectionDelegate += new MsgBox.ConfirmSelection(detailMsgBox_ConfirmSelectionDelegate);
+                detailMsgBox.Show();
+            }
+        }
+
+        void detailMsgBox_ConfirmSelectionDelegate(int selection)
+        {
+            if (selection == 1)
+            {
+                DataTable dt = (DataTable)dgCaseDetailList.DataSource;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    try
+                    {
+                        string sql = @"delete from CaseNumberDetail where ID=@ID";
+                        SQLiteParameter[] parameters = new SQLiteParameter[]{
+                            new SQLiteParameter("@ID", dt.Rows[dgCaseDetailList.CurrentRowIndex].ItemArray[6].ToString())
+                        };
+                        db.ExecuteNonQuery(sql, parameters);
+                        ReloadCaseDetailData(this.caseNumberID);
+                    }
+                    catch (Exception ex)
+                    {
+                        msg.ShowMessage("删除失败", 1);
+                    }
+                }
+            }
+            hkCaseDetailMgr.Start();
+        }
+        #endregion
+
+        #region 修改
+        public void CaseDetailEditHandler()
+        {
+            DataTable dt = (DataTable)dgCaseDetailList.DataSource;
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                hkCaseDetailMgr.Stop();
+                CaseDetailMgrEdit editFrm = new CaseDetailMgrEdit(dt.Rows[dgCaseDetailList.CurrentRowIndex].ItemArray[1].ToString(),
+                    dt.Rows[dgCaseDetailList.CurrentRowIndex].ItemArray[2].ToString(), dt.Rows[dgCaseDetailList.CurrentRowIndex].ItemArray[3].ToString(),
+                    dt.Rows[dgCaseDetailList.CurrentRowIndex].ItemArray[4].ToString(), dt.Rows[dgCaseDetailList.CurrentRowIndex].ItemArray[5].ToString(),
+                    this.caseNumberID, true);
+                editFrm.GetCaseDetailEditDelegate += new CaseDetailMgrEdit.GetCaseDetailEdit(editFrm_GetCaseDetailEditDelegate);
+                editFrm.Show();
+            }
+        }
+
+        void editFrm_GetCaseDetailEditDelegate(int selection, int Num, string Barcode, string caseNumberID)
+        {
+            if (selection == 1)
+            {
+                try
+                {
+                    string sql = @"select * from CaseNumberDetail where Barcode=@Barcode and CaseNumberID=@CaseNumberID";
+                    SQLiteParameter[] parameters = new SQLiteParameter[]{
+                        new SQLiteParameter("@Barcode", Barcode),
+                        new SQLiteParameter("@CaseNumberID", caseNumberID)
+                    };
+                    DataTable dt = db.ExecuteDataTable(sql, parameters);
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        sql = @"update CaseNumberDetail set Num=@Num where CaseNumberID=@CaseNumberID and Barcode=@Barcode";
+                        parameters = new SQLiteParameter[]{
+                            new SQLiteParameter("@Num", Num),
+                            new SQLiteParameter("@CaseNumberID", caseNumberID),
+                            new SQLiteParameter("@Barcode", Barcode)
+                        };
+                        db.ExecuteNonQuery(sql, parameters);
+                        ReloadCaseDetailData(caseNumberID);
+                    }
+                    else
+                    {
+                        if (Num > 0)
+                        {
+                            sql = @"select * from FromERPDetail where Barcode=@Barcode";
+                            DataTable prodDt = db.ExecuteDataTable(sql, parameters);
+                            if (prodDt != null && prodDt.Rows.Count > 0)
+                            {
+                                sql = @"insert into CaseNumberDetail(ID,ProdID,Num,CaseNumberID,Barcode,CreateTime,LoginID)  
+                                    values (@ID,@ProdID,@Num,@CaseNumberID,@Barcode,@CreateTime,@LoginID)";
+                                parameters = new SQLiteParameter[]{
+                                    new SQLiteParameter("@ID", Guid.NewGuid().ToString()),
+                                    new SQLiteParameter("@ProdID", prodDt.Rows[0]["ProdID"].ToString()),
+                                    new SQLiteParameter("@Num", Num),
+                                    new SQLiteParameter("@CaseNumberID", caseNumberID),
+                                    new SQLiteParameter("@Barcode", Barcode),
+                                    new SQLiteParameter("@CreateTime", DateTime.Now.ToString()),
+                                    new SQLiteParameter("@LoginID", GlobalShare.LoginID)
+                                };
+                                db.ExecuteNonQuery(sql, parameters);
+                                ReloadCaseDetailData(caseNumberID);
+                            }
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            else if (selection == 2)
+            {
+                try
+                {
+                    string sql = @"select * from CaseNumberDetail where Barcode=@Barcode and CaseNumberID=@CaseNumberID";
+                    SQLiteParameter[] parameters = new SQLiteParameter[]{
+                        new SQLiteParameter("@Barcode", Barcode),
+                        new SQLiteParameter("@CaseNumberID", caseNumberID)
+                    };
+                    DataTable dt = db.ExecuteDataTable(sql, parameters);
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        sql = @"delete from CaseNumberDetail where ID=@ID";
+                        parameters = new SQLiteParameter[]{
+                            new SQLiteParameter("@ID", dt.Rows[0]["ID"].ToString())
+                        };
+                        db.ExecuteNonQuery(sql, parameters);
+                        ReloadCaseDetailData(caseNumberID);
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            else
+            {
+                ReloadCaseDetailData(caseNumberID);
+            }
+            hkCaseDetailMgr.Start();
+        }
+        #endregion
+
+        #region 搜索
+        public void KeyPressHandler(string keyStr)
+        {
+            if (!string.IsNullOrEmpty(keyStr))
+            {
+                hkCaseDetailMgr.Stop();
+                CaseDetailMgrSearch searchFrm = new CaseDetailMgrSearch(keyStr);
+                searchFrm.GetConfirmSearchDelegate += new CaseDetailMgrSearch.GetConfirmSearch(searchFrm_GetConfirmSearchDelegate);
+                searchFrm.Show();
+            }
+        }
+
+        void searchFrm_GetConfirmSearchDelegate(int selection, int index)
+        {
+            if (selection == 1)
+            {
+                DataTable dt = (DataTable)dgCaseDetailList.DataSource;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        if (dt.Rows[i].ItemArray[0].ToString().Equals(index.ToString()))
+                        {
+                            dgCaseDetailList.UnSelect(dgCaseDetailList.CurrentRowIndex);
+                            dgCaseDetailList.CurrentRowIndex = i;
+                            dgCaseDetailList.Select(i);
+                            break;
+                        }
+                    }
+                }
+            }
+            hkCaseDetailMgr.Start();
+        }
+        #endregion
+
+        #region 整行选中模式
+        private void dgCaseDetailList_GotFocus(object sender, EventArgs e)
+        {
+            if (dgCaseDetailList != null)
+            {
+                DataTable dt = (DataTable)dgCaseDetailList.DataSource;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    int index = ((DataGrid)sender).CurrentCell.RowNumber;
+                    ((DataGrid)sender).Select(index);
+                }
+            }
+        }
+
+        private void dgCaseDetailList_CurrentCellChanged(object sender, EventArgs e)
+        {
+            if (dgCaseDetailList != null)
+            {
+                DataTable dt = (DataTable)dgCaseDetailList.DataSource;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    int index = ((DataGrid)sender).CurrentCell.RowNumber;
+                    ((DataGrid)sender).Select(index);
+                }
+            }
+        }
+        #endregion
+
+    }
+}

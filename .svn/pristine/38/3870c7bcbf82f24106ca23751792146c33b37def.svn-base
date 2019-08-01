@@ -1,0 +1,715 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using HomotorDepotMgr.Utility;
+using D300.System;
+using SCAN.Scanner2D;
+using System.Data.SQLite;
+using Newtonsoft.Json;
+using HomotorDepotMgr.Model;
+using System.Threading;
+using System.Drawing.Imaging;
+using AlphaMobileControls;
+using System.Reflection;
+using System.IO;
+
+namespace HomotorDepotMgr
+{
+    public partial class Main : AlphaMobileControls.AlphaForm
+    {
+        SQLiteDBHelper db = new SQLiteDBHelper();
+        MsgDialog msgDialog = new MsgDialog();
+        string path = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
+        Hook hkMain = new Hook("hkMain");
+        Cls_Message clsMessage;
+        System.Windows.Forms.Timer HelpTime = new System.Windows.Forms.Timer();
+        float offset = 0;
+        string tempStr = string.Empty;
+        string noticeMsg = string.Empty;
+
+        public Main()
+        {
+            InitializeComponent();
+            pbxLogo.Image = AlphaImage.CreateFromFile(path + @"\Resources\logo.png");
+            pbxLogo.Alpha = 200;
+            lblDeviceID.Text = TerminalInfo.GetDeviceID();
+            clsMessage = new Cls_Message(this.Handle);
+            clsMessage.MessageHandlerDelegate += new Cls_Message.MessageHandler(clsMessage_MessageHandlerDelegate);
+            hkMain.KeyHandlerDelegate += new Hook.KeyHandler(hkMain_KeyHandlerDelegate);
+            hkMain.Start();
+            RecordAppLocation();
+            CheckNewVersion();
+        }
+
+        void clsMessage_MessageHandlerDelegate(IntPtr hWnd, string message)
+        {
+            if (hWnd == this.Handle)
+            {
+                if (message.Equals("ProductDetail"))
+                {
+                    prodFrm_ProductDetailWindowBackDelegate();
+                }
+                else
+                {
+                    hkMain.Start();
+                }
+            }
+        }
+
+        int hkMain_KeyHandlerDelegate(int vkCode, string clsName)
+        {
+            int result = 0;
+            if (clsName.Equals("hkMain"))
+            {
+                switch (vkCode)
+                {
+                    case VirtualKey.VK_BACK:
+                        //CaseDetailDelHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_ENTER:
+                        //CaseDetailEditHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_ESCAPE:
+                        hkMain.Stop();
+                        this.Close();
+                        this.Dispose();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_F1:
+                        UploadHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_F2:
+                        
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_F3:
+                        ProductDetailHandler();
+                        result = -1;
+                        break;
+                }
+            }
+            return result;
+        }
+
+        private void Main_Activated(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent += new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Enable();//启用扫描
+        }
+
+        private void Main_Deactivate(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent -= new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Disable();//禁用扫描
+        }
+
+        void scanner_OnScanedEvent(Scanner.CodeInfo obj)
+        {
+            if (this.InvokeRequired)
+            {
+                Action<Scanner.CodeInfo> delegateFun = new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+                this.Invoke(delegateFun, obj);
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(obj.barcode))
+                {
+                    if (!CheckLoginInfo())
+                    {
+                        hkMain.Stop();
+                        UserLogin loginFrm = new UserLogin();
+                        loginFrm.LoginSelectionDelegate += delegate(int selection, string loginID)
+                        {
+                            if (selection == 1)
+                            {
+                                AddLoginInfo(loginID);
+                                CheckData(obj);
+                            }
+                            else
+                            {
+                                hkMain.Start();
+                                //msgDialog.ShowMessage("登录失败", 1);
+                            }
+                        };
+                        loginFrm.Show();
+                    }
+                    else
+                    {
+                        CheckData(obj);
+                    }
+                }
+            }
+        }
+
+        public void CheckData(Scanner.CodeInfo obj)
+        {
+            string sql = @"select * from CaseNumber";
+            try
+            {
+                DataTable dt = db.ExecuteDataTable(sql, null);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    hkMain.Stop();
+                    MsgBox prompt = new MsgBox("还有单据没有上传，是否要删除？", "警告", 3);
+                    prompt.ConfirmSelectionDelegate += delegate(int selection)
+                    {
+                        if (selection == 1)
+                        {
+                            ClearAllData();
+                            DownloadDetailHandler(obj);
+                        }
+                        else
+                        {
+                            hkMain.Start();
+                        }
+                    };
+                    prompt.Show();
+                }
+                else
+                {
+                    hkMain.Stop();
+                    DownloadDetailHandler(obj);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void ClearAllData()
+        {
+            try
+            {
+                string sql = @"delete from CaseNumberDetail";
+                db.ExecuteNonQuery(sql, null);
+                sql = @"delete from CaseNumber";
+                db.ExecuteNonQuery(sql, null);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void DownloadDetailHandler(Scanner.CodeInfo obj)
+        {
+            #region 记录发货单条码
+            string sql = @"delete from AppConfig where Key=@Key";
+            SQLiteParameter[] parameters = new SQLiteParameter[]{
+                new SQLiteParameter("@Key", "CaseBarcode"),
+                new SQLiteParameter("@Value", obj.barcode)
+             };
+            try
+            {
+                db.ExecuteNonQuery(sql, parameters);
+                sql = @"insert into AppConfig(Key,Value) values(@Key,@Value)";
+                //parameters = new SQLiteParameter[]{
+                //    new SQLiteParameter("@Key", "CaseBarcode"),
+                //    new SQLiteParameter("@Value", "0000000004-01")
+                // };
+                db.ExecuteNonQuery(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+            }
+            #endregion
+            #region 上传条码，下载发货单明细
+            if (D300SysUI.CheckNetworkStatus())
+            {
+                string detailStrJson = DataUpDownload.DownloadInvoiceDetail(obj.barcode);
+                FromERPJson model = JsonConvert.DeserializeObject<FromERPJson>(detailStrJson);
+                if (model.IsSuccess)
+                {
+                    msgDialog.ShowMessage("正在处理中，请稍后···", 1);
+                    sql = @"delete from FromERPDetail";
+                    try
+                    {
+                        db.ExecuteNonQuery(sql, null);
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                    if (model.ReturnData.Count > 0)
+                    {
+                        bool isSuccess = false;
+                        sql = @"insert into FromERPDetail(InvoiceID,ProdID,Model,ProdName,Num,Barcode,BoxBarcode,NormNum,Title,bJianMaInBox) values (@InvoiceID,@ProdID,@Model,@ProdName,@Num,@Barcode,@BoxBarcode,@NormNum,@Title,@bJianMaInBox)";
+                        foreach (FromERPDetailJson item in model.ReturnData)
+                        {
+                            parameters = new SQLiteParameter[]{
+                             new SQLiteParameter("@InvoiceID", item.InvoiceID),
+                             new SQLiteParameter("@ProdID", item.ProdID),
+                             new SQLiteParameter("@Model", item.Model),
+                             new SQLiteParameter("@ProdName", item.ProdName),
+                             new SQLiteParameter("@Num", item.Num),
+                             new SQLiteParameter("@Barcode", item.Barcode),
+                             new SQLiteParameter("@BoxBarcode", item.BoxBarcode),
+                             new SQLiteParameter("@NormNum", item.NormNum),
+                             new SQLiteParameter("@Title", item.Title),
+                             new SQLiteParameter("@bJianMaInBox", item.bJianMaInBox)
+                         };
+                            try
+                            {
+                                db.ExecuteNonQuery(sql, parameters);
+                                isSuccess = true;
+                            }
+                            catch (Exception ex)
+                            {
+                                isSuccess = false;
+                                break;
+                            }
+                        }
+                        if (isSuccess)
+                        {
+                            CaseMgr caseMgrFrm = new CaseMgr(0);
+                            caseMgrFrm.Show();
+                        }
+                    }
+                }
+                else
+                {
+                    msgDialog.ShowMessage("没有该发货草稿单据", 1);
+                }
+            }
+            else
+            {
+                msgDialog.ShowMessage("网络没有连接", 1);
+            }
+            #endregion
+        }
+
+        private void btnUpload_Click(object sender, EventArgs e)
+        {
+            UploadHandler();
+        }
+
+        public void UploadHandler()
+        {
+            try
+            {
+                string sql = @"select * from CaseNumber";
+                DataTable dt = db.ExecuteDataTable(sql, null);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    if (!CheckLoginInfo())
+                    {
+                        hkMain.Stop();
+                        UserLogin loginFrm = new UserLogin();
+                        loginFrm.LoginSelectionDelegate += delegate(int selection, string loginID)
+                        {
+                            if (selection == 1)
+                            {
+                                AddLoginInfo(loginID);
+                                UploadData();
+                                hkMain.Start();
+                            }
+                            else
+                            {
+                                hkMain.Start();
+                                //msgDialog.ShowMessage("登录失败", 1);
+                            }
+                        };
+                        loginFrm.Show();
+                    }
+                    else
+                    {
+                        UploadData();
+                    }
+                }
+                else
+                {
+                    msgDialog.ShowMessage("没有单据", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void UploadData()
+        {
+            try
+            {
+                StringBuilder sb = new StringBuilder();
+                string sql = @"select Value from AppConfig where Key=@Key";
+                SQLiteParameter[] parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@Key", "CaseBarcode")
+                 };
+                DataTable dt = db.ExecuteDataTable(sql, parameters);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    sql = @"select ID,CaseNumber,FromID,LoginID from CaseNumber";
+                    DataTable caseDt = db.ExecuteDataTable(sql, null);
+                    if (caseDt != null && caseDt.Rows.Count > 0)
+                    {
+                        sql = @"select ID,CaseNumberID,ProdID,Num,LoginID from CaseNumberDetail";
+                        DataTable caseDetailDt = db.ExecuteDataTable(sql, null);
+                        if (caseDetailDt != null && caseDetailDt.Rows.Count > 0)
+                        {
+                            CaseData data = new CaseData();
+                            data.InvoiceBarcode = dt.Rows[0].ItemArray[0].ToString();
+                            data.LoginID = GlobalShare.LoginID;
+                            List<CaseNumberEntity> caseList = new List<CaseNumberEntity>();
+                            data.InvoiceCase = caseList;
+                            foreach (DataRow caseDr in caseDt.Rows)
+                            {
+                                CaseNumberEntity caseItem = new CaseNumberEntity();
+                                caseItem.ID = caseDr[0].ToString();
+                                caseItem.CaseNumber = caseDr[1].ToString();
+                                caseItem.FromID = caseDr[2].ToString();
+                                caseItem.LoginID = caseDr[3].ToString();
+                                List<CaseNumberDetail> detailList = new List<CaseNumberDetail>();
+                                caseItem.InvoiceCaseDetail = detailList;
+                                DataRow[] detailArray = caseDetailDt.Select("CaseNumberID='" + caseDr[0].ToString() + "'");
+                                if (detailArray.Length > 0)
+                                {
+                                    foreach (DataRow detailDr in detailArray)
+                                    {
+                                        CaseNumberDetail detailItem = new CaseNumberDetail();
+                                        detailItem.ID = detailDr[0].ToString();
+                                        detailItem.CaseNumberID = detailDr[1].ToString();
+                                        detailItem.ProdID = detailDr[2].ToString();
+                                        detailItem.Num = detailDr[3].ToString();
+                                        detailItem.LoginID = detailDr[4].ToString();
+                                        detailList.Add(detailItem);
+                                    }
+                                }
+                                caseList.Add(caseItem);
+                            }
+                            string jsonStrData = JsonConvert.SerializeObject(data);
+                            if (!string.IsNullOrEmpty(jsonStrData))
+                            {
+                                if (D300SysUI.CheckNetworkStatus())
+                                {
+                                    //上传数据
+                                    string returnJson = DataUpDownload.UploadInvoiceDetail(jsonStrData);
+                                    if (!string.IsNullOrEmpty(returnJson))
+                                    {
+                                        ResultModel resModel = JsonConvert.DeserializeObject<ResultModel>(returnJson);
+                                        if (resModel != null && resModel.IsSuccess)
+                                        {
+                                            msgDialog.ShowMessage("上传成功", 1);
+                                            //删除数据
+                                            ClearDataBase();
+                                        }
+                                        else
+                                        {
+                                            msgDialog.ShowMessage("上传失败", 1);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        msgDialog.ShowMessage("上传失败", 1);
+                                    }
+                                }
+                                else
+                                {
+                                    msgDialog.ShowMessage("网络没有连接", 1);
+                                }
+                            }
+                            else
+                            {
+                                msgDialog.ShowMessage("上传失败", 1);
+                            }
+                        }
+                        else
+                        {
+                            msgDialog.ShowMessage("上传失败", 1);
+                        }
+                    }
+                    else
+                    {
+                        msgDialog.ShowMessage("上传失败", 1);
+                    }
+                }
+                else
+                {
+                    msgDialog.ShowMessage("上传失败，没有数据", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+                msgDialog.ShowMessage("上传失败", 1);
+            }
+        }
+
+        public void ClearDataBase()
+        {
+            try
+            {
+                string sql = @"delete from CaseNumberDetail";
+                db.ExecuteNonQuery(sql, null);
+                sql = @"delete from CaseNumber";
+                db.ExecuteNonQuery(sql, null);
+                sql = @"delete from AppConfig where Key=@Key";
+                SQLiteParameter[] parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@Key", "CaseBarcode")
+                 };
+                db.ExecuteNonQuery(sql, parameters);
+                sql = @"delete from FromERPDetail";
+                db.ExecuteNonQuery(sql, null);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private void btnOpen_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                string sql = @"select * from CaseNumber";
+                DataTable dt = db.ExecuteDataTable(sql, null);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    if (!CheckLoginInfo())
+                    {
+                        hkMain.Stop();
+                        UserLogin loginFrm = new UserLogin();
+                        loginFrm.LoginSelectionDelegate += delegate(int selection, string loginID)
+                        {
+                            if (selection == 1)
+                            {
+                                AddLoginInfo(loginID);
+                                hkMain.Stop();
+                                CaseMgr caseMgrFrm = new CaseMgr(1);
+                                caseMgrFrm.Show();
+                            }
+                            else
+                            {
+                                hkMain.Start();
+                                //msgDialog.ShowMessage("登录失败", 1);
+                            }
+                        };
+                        loginFrm.Show();
+                    }
+                    else
+                    {
+                        hkMain.Stop();
+                        CaseMgr caseMgrFrm = new CaseMgr(1);
+                        caseMgrFrm.Show();
+                    }
+                }
+                else
+                {
+                    msgDialog.ShowMessage("没有单据", 1);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private void btnSettings_Click(object sender, EventArgs e)
+        {
+            hkMain.Stop();
+            Settings settingFrm = new Settings();
+            settingFrm.GetCaseSettingsDelegate += new Settings.GetCaseSettings(settingFrm_GetCaseSettingsDelegate);
+            settingFrm.Show();
+        }
+
+        void settingFrm_GetCaseSettingsDelegate(int selection, SettingModel setting)
+        {
+            if (selection == 1)
+            {
+                try
+                {
+                    string sql = @"select * from AppConfig where Key=@Key";
+                    SQLiteParameter[] parameters = new SQLiteParameter[]{
+                        new SQLiteParameter("@Key", "IP"),
+                        new SQLiteParameter("@Value", setting.IP)
+                     };
+                    DataTable dt = db.ExecuteDataTable(sql, parameters);
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        sql = @"update AppConfig set Value=@Value where Key=@Key";
+                        db.ExecuteNonQuery(sql, parameters);
+                    }
+                    else
+                    {
+                        sql = @"insert into AppConfig(Key,Value) values(@Key,@Value)";
+                        db.ExecuteNonQuery(sql, parameters);
+                    }
+                    sql = @"select * from AppConfig where Key=@Key";
+                    parameters = new SQLiteParameter[]{
+                        new SQLiteParameter("@Key", "Port"),
+                        new SQLiteParameter("@Value", setting.Port)
+                     };
+                    dt = db.ExecuteDataTable(sql, parameters);
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        sql = @"update AppConfig set Value=@Value where Key=@Key";
+                        db.ExecuteNonQuery(sql, parameters);
+                    }
+                    else
+                    {
+                        sql = @"insert into AppConfig(Key,Value) values(@Key,@Value)";
+                        db.ExecuteNonQuery(sql, parameters);
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            hkMain.Start();
+        }
+
+        private void btnQuit_Click(object sender, EventArgs e)
+        {
+            //注销账号
+            GlobalShare.LoginID = string.Empty;
+            this.Close();
+            this.Dispose();
+        }
+
+        #region 登录处理
+        public bool CheckLoginInfo()
+        {
+            bool flag = false;
+            if (!string.IsNullOrEmpty(GlobalShare.LoginID))
+            {
+                flag = true;
+            }
+            return flag;
+        }
+
+        public void AddLoginInfo(string loginID)
+        {
+            try
+            {
+                GlobalShare.LoginID = loginID;
+                string sql = @"insert into LoginInfo (LoginID,CreateTime) select @LoginID,@CreateTime where not exists (SELECT 1 FROM LoginInfo where LoginID = @LoginID)";
+                SQLiteParameter[]  parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@LoginID", loginID),
+                    new SQLiteParameter("@CreateTime", DateTime.Now.ToString())
+                 };
+                db.ExecuteNonQuery(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+        #endregion
+
+        #region 记录应用程序目录
+        public void RecordAppLocation()
+        {
+            try
+            {
+                string sql = @"insert into AppConfig(Key,Value) select @Key,@Value where not exists(select 1 from AppConfig where Key=@Key);
+                update AppConfig set Value=@Value where Key=@Key and exists(select 1 from AppConfig where Key=@Key);";
+                SQLiteParameter[] parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@Key", "AppLocation"),
+                    new SQLiteParameter("@Value", path)
+                 };
+                db.ExecuteNonQuery(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+        #endregion
+
+        #region 检测最新版本
+        public void CheckNewVersion()
+        {
+            HelpTime.Enabled = false;
+            try
+            {
+                if (D300SysUI.CheckNetworkStatus())
+                {
+                    string exeFile = string.Empty;
+                    DateTime curVersion = DateTime.Now;
+                    TimeService.SetSystemLocalTime();
+                    DirectoryInfo root = new DirectoryInfo(path);
+                    if (root.GetFiles().Length > 0)
+                    {
+                        foreach (var fn in root.GetFiles())
+                        {
+                            if (Path.GetExtension(fn.FullName).Equals(".exe"))
+                            {
+                                exeFile = fn.FullName;
+                                curVersion = fn.LastWriteTime;
+                                break;
+                            }
+                        }
+                    }
+                    string newVersion = DataUpDownload.GetLatestVersionStr();
+                    if (!string.IsNullOrEmpty(newVersion))
+                    {
+                        if (DateTime.Parse(newVersion) > curVersion)
+                        {
+                            noticeMsg = "有最新版本，请到【设置】里更新";
+                            RunTimer();
+                        }
+                    }
+                }
+                else
+                {
+                    noticeMsg = "网络没有连接，请检查网络";
+                    RunTimer();
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        #region 消息提示滚动字幕
+        public void RunTimer()
+        {
+            HelpTime.Enabled = true; //让时间控件可用
+            HelpTime.Interval = 300; //时间间隔300毫秒
+            offset = 240;
+            HelpTime.Tick += new EventHandler(HelpTime_Tick);  //注册时间控件的Tick事件
+        }
+
+        private void HelpTime_Tick(object sender, EventArgs e)
+        {
+            Graphics g = this.CreateGraphics();
+            g.Clip = new Region(new Rectangle(15, 97, 240, 20));
+            SizeF s = new SizeF();
+            Font f = new Font("Tahoma", 12, FontStyle.Regular);
+            s = g.MeasureString(noticeMsg, f); //测量文字长度
+            Brush brush = new SolidBrush(Color.Red); //设置字体颜色
+            g.Clear(Color.FromArgb(192, 192, 192)); //清除背景
+            if (tempStr != noticeMsg) //文字改变时,重新显示
+            {
+                offset = 240;
+                tempStr = noticeMsg;
+            }
+            else
+            {
+                offset = offset - 10;  //每次偏移10
+            }
+            if (offset <= -s.Width)
+            {
+                offset = 240;
+            }
+            g.DrawString(noticeMsg, f, brush, offset, 97);
+        }
+        #endregion
+
+        #endregion
+
+        #region 配件详情
+        public void ProductDetailHandler()
+        {
+            hkMain.Stop();
+            ProductDetail prodFrm = new ProductDetail("Main");
+            prodFrm.Show();
+        }
+
+        void prodFrm_ProductDetailWindowBackDelegate()
+        {
+            hkMain.Start();
+        }
+        #endregion
+
+    }
+}

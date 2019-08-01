@@ -1,0 +1,15 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
+
+namespace HomotorDepotMgr.Model
+{
+    public class CaseNumberEntity
+    {
+        public string ID { get; set; }
+        public string CaseNumber { get; set; }
+        public string FromID { get; set; }
+        public List<CaseNumberDetail> InvoiceCaseDetail { get; set; }
+    }
+}

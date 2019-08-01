@@ -1,0 +1,101 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using HomotorDepotMgr.Model;
+using HomotorDepotMgr.Utility;
+using System.Data.SQLite;
+
+namespace HomotorDepotMgr
+{
+    public partial class Settings : Form
+    {
+        public delegate void GetCaseSettings(int selection, SettingModel setting);
+        public event GetCaseSettings GetCaseSettingsDelegate;
+
+        Hook hkSettings = new Hook("Settings");
+        int keyCounter = 0;
+
+        public Settings()
+        {
+            InitializeComponent();
+            ReloadSettings();
+            hkSettings.KeyHandlerDelegate += new Hook.KeyHandler(hkSettings_KeyHandlerDelegate);
+            hkSettings.Start();
+        }
+
+        int hkSettings_KeyHandlerDelegate(int vkCode, string clsName)
+        {
+            if (clsName.Equals("Settings"))
+            {
+                if (vkCode == VirtualKey.VK_ENTER)
+                {
+                    keyCounter++;
+                    if (keyCounter == 2)
+                    {
+                        SettingsOKHandler();
+                        keyCounter = 0;
+                    }
+                    return -1;
+                }
+                if (vkCode == VirtualKey.VK_ESCAPE)
+                {
+                    SettingsCancelHandler();
+                    return -1;
+                }
+            }
+            return 0;
+        }
+
+        public void SettingsOKHandler()
+        {
+            hkSettings.Stop();
+            GetCaseSettingsDelegate(1, new SettingModel() { IP = txtIPAddress.Text, Port = txtPort.Text });
+            this.Close();
+        }
+
+        public void SettingsCancelHandler()
+        {
+            hkSettings.Stop();
+            GetCaseSettingsDelegate(0, new SettingModel());
+            this.Close();
+        }
+
+        private void btnSettingOK_Click(object sender, EventArgs e)
+        {
+            SettingsOKHandler();
+        }
+
+        private void btnSettingCancel_Click(object sender, EventArgs e)
+        {
+            SettingsCancelHandler();
+        }
+
+        public void ReloadSettings()
+        {
+            SQLiteDBHelper db = new SQLiteDBHelper();
+            string sql = @"select * from AppConfig where Key=@Key";
+            SQLiteParameter[] parameters = new SQLiteParameter[]{
+                new SQLiteParameter("@Key", "IP")
+             };
+            DataTable dt = db.ExecuteDataTable(sql, parameters);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                txtIPAddress.Text = dt.Rows[0].ItemArray[2].ToString();
+            }
+            parameters = new SQLiteParameter[]{
+                new SQLiteParameter("@Key", "Port")
+             };
+            dt = db.ExecuteDataTable(sql, parameters);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                txtPort.Text = dt.Rows[0].ItemArray[2].ToString();
+            }
+        }
+
+    }
+}

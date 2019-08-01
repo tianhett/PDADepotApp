@@ -1,0 +1,436 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using System.Runtime.InteropServices;
+using HomotorDepotMgr.Utility;
+using System.Data.SQLite;
+using SCAN.Scanner2D;
+
+namespace HomotorDepotMgr
+{
+    public partial class CaseMgr : Form
+    {
+        Hook hkCaseMgr = new Hook("hkCaseMgr");
+        SQLiteDBHelper db = new SQLiteDBHelper();
+        MsgDialog msg = new MsgDialog();
+        Cls_Message clsMessage;
+
+        public CaseMgr(int type)
+        {
+            InitializeComponent();
+            SetInvoiceTitle();
+            if (type == 1)
+            {
+                ReloadCaseData();
+            }
+            clsMessage = new Cls_Message(this.Handle);
+            clsMessage.MessageHandlerDelegate += new Cls_Message.MessageHandler(clsMessage_MessageHandlerDelegate);
+            hkCaseMgr.KeyHandlerDelegate += new Hook.KeyHandler(hkCaseMgr_KeyHandlerDelegate);
+            hkCaseMgr.Start();
+        }
+
+        void clsMessage_MessageHandlerDelegate(IntPtr hWnd, string message)
+        {
+            if (hWnd == this.Handle)
+            {
+                detailFrm_CaseDetailMgrWindowBackDegelate();
+            }
+        }
+
+        private void CaseMgr_Activated(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent += new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Enable();//启用扫描
+        }
+
+        private void CaseMgr_Deactivate(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent -= new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Disable();//禁用扫描
+        }
+
+        void scanner_OnScanedEvent(Scanner.CodeInfo obj)
+        {
+            if (this.InvokeRequired)
+            {
+                Action<Scanner.CodeInfo> delegateFun = new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+                this.Invoke(delegateFun, obj);
+            }
+            else
+            {
+                //跳到增加明细界面上
+                if (!string.IsNullOrEmpty(obj.barcode))
+                {
+                    hkCaseMgr.Stop();
+                    DataTable dt = (DataTable)dgCaseList.DataSource;
+                    string caseNumberID = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[2].ToString();
+                    string caseNo = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[0].ToString();
+                    CaseDetailMgrAdd detailAddFrm = new CaseDetailMgrAdd(caseNumberID, obj.barcode, caseNo);
+                    detailAddFrm.Show();
+                }
+            }
+        }
+
+        int hkCaseMgr_KeyHandlerDelegate(int vkCode, string clsName)
+        {
+            int result = 0;
+            if (clsName.Equals("hkCaseMgr"))
+            {
+                switch (vkCode)
+                {
+                    case VirtualKey.VK_F1:
+                        CaseAddHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_BACK:
+                        CaseDelHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_0:
+                        KeyPressHandler("0");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_1:
+                        KeyPressHandler("1");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_2:
+                        KeyPressHandler("2");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_3:
+                        KeyPressHandler("3");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_4:
+                        KeyPressHandler("4");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_5:
+                        KeyPressHandler("5");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_6:
+                        KeyPressHandler("6");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_7:
+                        KeyPressHandler("7");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_8:
+                        KeyPressHandler("8");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_9:
+                        KeyPressHandler("9");
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_ESCAPE:
+                        hkCaseMgr.Stop();
+                        Cls_Message.SendMessage("仓库拣货", "Main");
+                        this.Close();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_ENTER:
+                        EditCaseNumber();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_RIGHT:
+                        ViewCaseNumberDetail();
+                        result = -1;
+                        break;
+                }
+            }
+            return result;
+        }
+
+        #region 按下数字键，弹出箱号搜索框
+        public void KeyPressHandler(string keyStr)
+        {
+            if (!string.IsNullOrEmpty(keyStr))
+            {
+                hkCaseMgr.Stop();
+                CaseMgrSearch searchFrm = new CaseMgrSearch(keyStr);
+                searchFrm.GetConfirmSearchDelegate += new CaseMgrSearch.GetConfirmSearch(searchFrm_GetConfirmSearchDelegate);
+                searchFrm.Show();
+            }
+        }
+
+        void searchFrm_GetConfirmSearchDelegate(int selection, int num)
+        {
+            if (selection == 1)
+            {
+                DataTable dt = (DataTable)dgCaseList.DataSource;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    for (int i = 0; i < dt.Rows.Count; i++)
+                    {
+                        if (dt.Rows[i].ItemArray[0].ToString().Equals(num.ToString()))
+                        {
+                            dgCaseList.UnSelect(dgCaseList.CurrentRowIndex);
+                            dgCaseList.CurrentRowIndex = i;
+                            dgCaseList.Select(i);
+                            break;
+                        }
+                    }
+                }
+            }
+            hkCaseMgr.Start();
+        }
+        #endregion
+
+        #region 进入该箱号里面查看配件
+        public void ViewCaseNumberDetail()
+        {
+            hkCaseMgr.Stop();
+            DataTable dt = (DataTable)dgCaseList.DataSource;
+            string caseNumberID = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[2].ToString();
+            string caseNo = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[0].ToString();
+            CaseDetailMgr detailFrm = new CaseDetailMgr(caseNumberID, "", caseNo);
+            //弹窗关闭返回来设置queue、hkCaseMgr，刷新列表
+            //detailFrm.CaseDetailMgrWindowBackDegelate += new CaseDetailMgr.CaseDetailMgrWindowBack(detailFrm_CaseDetailMgrWindowBackDegelate);
+            detailFrm.Show();
+        }
+
+        void detailFrm_CaseDetailMgrWindowBackDegelate()
+        {
+            try
+            {
+                string sql = @"update CaseNumber set Total=(select sum(Num) from CaseNumberDetail where CaseNumber.ID=CaseNumberDetail.CaseNumberID)";
+                db.ExecuteNonQuery(sql, null);
+                ReloadCaseData();
+            }
+            catch (Exception ex)
+            {
+            }
+            hkCaseMgr.Start();
+        }
+        #endregion
+
+        #region 修改箱号
+        public void EditCaseNumber()
+        {
+            hkCaseMgr.Stop();
+            DataTable dt = (DataTable)dgCaseList.DataSource;
+            string caseNumber = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[0].ToString();
+            CaseMgrAdd frm = new CaseMgrAdd("修改箱号", 1, caseNumber);
+            frm.GetCaseNumberDelegate += new CaseMgrAdd.GetCaseNumber(frm_GetCaseNumberDelegate);
+            frm.Show();
+        }
+        #endregion
+
+        #region 新增修改箱子
+        //private void btnCaseAdd_Click(object sender, EventArgs e)
+        //{
+        //    CaseAddHandler();
+        //}
+
+        public void CaseAddHandler()
+        {
+            hkCaseMgr.Stop();
+            CaseMgrAdd frm = new CaseMgrAdd("添加箱号", 0, "");
+            frm.GetCaseNumberDelegate += new CaseMgrAdd.GetCaseNumber(frm_GetCaseNumberDelegate);
+            frm.Show();
+        }
+
+        void frm_GetCaseNumberDelegate(int selection, int num, int type, string oldNumber)
+        {
+            if (selection == 1)
+            {
+                SQLiteParameter[] parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@ID", Guid.NewGuid().ToString()),
+                    new SQLiteParameter("@CaseNumber", num),
+                    new SQLiteParameter("@FromID", TerminalInfo.GetDeviceID()),
+                    new SQLiteParameter("@LoginID", GlobalShare.LoginID)
+                };
+                string sql = @"select * from CaseNumber where CaseNumber=@CaseNumber";
+                try
+                {
+                    DataTable dt = db.ExecuteDataTable(sql, parameters);
+                    if (dt != null && dt.Rows.Count > 0)
+                    {
+                        msg.ShowMessage(num + "号箱已存在", 1);
+                    }
+                    else
+                    {
+                        if (type == 0)
+                        {
+                            sql = @"insert into CaseNumber(ID,CaseNumber,FromID,LoginID) values(@ID,@CaseNumber,@FromID,@LoginID)";
+                        }
+                        else if (type == 1)
+                        {
+                            sql = @"update CaseNumber set CaseNumber=@CaseNumber where CaseNumber=@oldCaseNumber";
+                            parameters = new SQLiteParameter[]{
+                            new SQLiteParameter("@CaseNumber", num),
+                            new SQLiteParameter("@oldCaseNumber", oldNumber)
+                        };
+                        }
+                        try
+                        {
+                            db.ExecuteNonQuery(sql, parameters);
+                            ReloadCaseData();
+                        }
+                        catch (Exception ex)
+                        {
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            hkCaseMgr.Start();
+        }
+        #endregion
+
+        #region 删除箱子
+        //private void btnCaseDel_Click(object sender, EventArgs e)
+        //{
+        //    CaseDelHandler();
+        //}
+
+        public void CaseDelHandler()
+        {
+            DataTable dt = (DataTable)dgCaseList.DataSource;
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                hkCaseMgr.Stop();
+                MsgBox msgBox = new MsgBox("是否确认要删除该箱号？", "警告", 3);
+                msgBox.ConfirmSelectionDelegate += new MsgBox.ConfirmSelection(msgBox_ConfirmSelectionDelegate);
+                msgBox.Show();
+            }
+        }
+
+        void msgBox_ConfirmSelectionDelegate(int selection)
+        {
+            if (selection == 1)
+            {
+                try
+                {
+                    DataTable dt = (DataTable)dgCaseList.DataSource;
+                    string caseNumberID = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[2].ToString();
+                    //把箱子其下对应的配件明细也删除
+                    string sql = @"delete from CaseNumberDetail where CaseNumberID=@CaseNumberID";
+                    SQLiteParameter[] parameters = new SQLiteParameter[]{
+                        new SQLiteParameter("@CaseNumberID", caseNumberID)
+                    };
+                    db.ExecuteNonQuery(sql, parameters);
+                    //把自己的箱子删除
+                    sql = @"delete from CaseNumber where ID=@CaseNumberID";
+                    db.ExecuteNonQuery(sql, parameters);
+                    ReloadCaseData();
+                }
+                catch (Exception ex)
+                {
+                }
+            }
+            hkCaseMgr.Start();
+        }
+        #endregion
+
+
+        public void SetInvoiceTitle()
+        {
+            try
+            {
+                string sql = @"select Title from FromERPDetail LIMIT 1";
+                object title = db.ExecuteScalar(sql, null);
+                this.lblInvoiceTitle.Text = title.ToString();
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void ReloadCaseData()
+        {
+            string sql = @"select CaseNumber as 箱号,ifnull(Total,0) as 箱件数,ID from CaseNumber order by CaseNumber";
+            try
+            {
+                DataTable dt = db.ExecuteDataTable(sql, null);
+                DataGridTableStyle ts = new DataGridTableStyle();
+                ts.MappingName = dt.TableName;
+                DataGridColumnStyle XHColStyle = new DataGridTextBoxColumn();
+                XHColStyle.MappingName = "箱号";
+                XHColStyle.HeaderText = "箱号";
+                XHColStyle.Width = 130;
+                ts.GridColumnStyles.Add(XHColStyle);
+                DataGridColumnStyle XJSColStyle = new DataGridTextBoxColumn();
+                XJSColStyle.MappingName = "箱件数";
+                XJSColStyle.HeaderText = "箱件数";
+                XJSColStyle.Width = 90;
+                ts.GridColumnStyles.Add(XJSColStyle);
+                DataGridColumnStyle XIDColStyle = new DataGridTextBoxColumn();
+                XIDColStyle.MappingName = "ID";
+                XIDColStyle.HeaderText = "ID";
+                XIDColStyle.Width = 0;
+                ts.GridColumnStyles.Add(XIDColStyle);
+                CreateNewCaseGrid();
+                dgCaseList.TableStyles.Add(ts);
+                dgCaseList.DataSource = null;
+                dgCaseList.DataSource = dt;
+                dgCaseList.RowHeadersVisible = false;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    dgCaseList.Select(0);
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void CreateNewCaseGrid()
+        {
+            this.Controls.Remove(this.dgCaseList);
+            this.dgCaseList = new System.Windows.Forms.DataGrid();
+            this.dgCaseList.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.dgCaseList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgCaseList.Location = new System.Drawing.Point(0, 20);
+            this.dgCaseList.Name = "dgCaseList";
+            this.dgCaseList.Size = new System.Drawing.Size(238, 250);
+            this.dgCaseList.TabIndex = 1;
+            this.dgCaseList.CurrentCellChanged += new System.EventHandler(this.dgCaseList_CurrentCellChanged);
+            this.dgCaseList.GotFocus += new System.EventHandler(this.dgCaseList_GotFocus);
+            this.Controls.Add(this.dgCaseList);
+            //激活窗口，并把焦点返回窗口
+            this.Activate();
+            this.Focus();
+        }
+
+        #region 整行选中模式
+        private void dgCaseList_GotFocus(object sender, EventArgs e)
+        {
+            if (dgCaseList != null)
+            {
+                DataTable dt = (DataTable)dgCaseList.DataSource;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    int index = ((DataGrid)sender).CurrentCell.RowNumber;
+                    ((DataGrid)sender).Select(index);
+                }
+            }
+        }
+
+        private void dgCaseList_CurrentCellChanged(object sender, EventArgs e)
+        {
+            if (dgCaseList != null)
+            {
+                DataTable dt = (DataTable)dgCaseList.DataSource;
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    int index = ((DataGrid)sender).CurrentCell.RowNumber;
+                    ((DataGrid)sender).Select(index);
+                }
+            }
+        }
+        #endregion
+
+    }
+}

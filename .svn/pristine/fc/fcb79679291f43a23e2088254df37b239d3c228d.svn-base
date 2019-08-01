@@ -1,0 +1,95 @@
+﻿namespace HomotorDepotMgr
+{
+    partial class CaseMgr
+    {
+        /// <summary>
+        /// 必需的设计器变量。
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// 清理所有正在使用的资源。
+        /// </summary>
+        /// <param name="disposing">如果应释放托管资源，为 true；否则为 false。</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows 窗体设计器生成的代码
+
+        /// <summary>
+        /// 设计器支持所需的方法 - 不要
+        /// 使用代码编辑器修改此方法的内容。
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.dgCaseList = new System.Windows.Forms.DataGrid();
+            this.splitter1 = new System.Windows.Forms.Splitter();
+            this.btnCaseAdd = new System.Windows.Forms.Button();
+            this.btnCaseDel = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // dgCaseList
+            // 
+            this.dgCaseList.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.dgCaseList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgCaseList.Location = new System.Drawing.Point(0, 20);
+            this.dgCaseList.Name = "dgCaseList";
+            this.dgCaseList.Size = new System.Drawing.Size(238, 250);
+            this.dgCaseList.TabIndex = 1;
+            // 
+            // splitter1
+            // 
+            this.splitter1.Dock = System.Windows.Forms.DockStyle.Top;
+            this.splitter1.Location = new System.Drawing.Point(0, 0);
+            this.splitter1.Name = "splitter1";
+            this.splitter1.Size = new System.Drawing.Size(238, 20);
+            // 
+            // btnCaseAdd
+            // 
+            this.btnCaseAdd.Location = new System.Drawing.Point(0, 0);
+            this.btnCaseAdd.Name = "btnCaseAdd";
+            this.btnCaseAdd.Size = new System.Drawing.Size(62, 20);
+            this.btnCaseAdd.TabIndex = 3;
+            this.btnCaseAdd.Text = "添加(F1)";
+            this.btnCaseAdd.Click += new System.EventHandler(this.btnCaseAdd_Click);
+            // 
+            // btnCaseDel
+            // 
+            this.btnCaseDel.Location = new System.Drawing.Point(62, 0);
+            this.btnCaseDel.Name = "btnCaseDel";
+            this.btnCaseDel.Size = new System.Drawing.Size(50, 20);
+            this.btnCaseDel.TabIndex = 4;
+            this.btnCaseDel.Text = "删除";
+            this.btnCaseDel.Click += new System.EventHandler(this.btnCaseDel_Click);
+            // 
+            // CaseMgr
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(238, 270);
+            this.Controls.Add(this.btnCaseDel);
+            this.Controls.Add(this.btnCaseAdd);
+            this.Controls.Add(this.dgCaseList);
+            this.Controls.Add(this.splitter1);
+            this.Name = "CaseMgr";
+            this.Text = "箱号管理";
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.DataGrid dgCaseList;
+        private System.Windows.Forms.Splitter splitter1;
+        private System.Windows.Forms.Button btnCaseAdd;
+        private System.Windows.Forms.Button btnCaseDel;
+
+    }
+}

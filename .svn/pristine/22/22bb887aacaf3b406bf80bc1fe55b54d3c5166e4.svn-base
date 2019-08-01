@@ -1,0 +1,123 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Text;
+using System.Net;
+using System.IO;
+using System.Data.SQLite;
+using System.Data;
+using HomotorDepotMgr.Model;
+using Newtonsoft.Json;
+
+namespace HomotorDepotMgr.Utility
+{
+    public class DataUpDownload
+    {
+        public static string GetServer()
+        {
+            string rs = string.Empty;
+            SQLiteDBHelper db = new SQLiteDBHelper();
+            string sql = @"select * from AppConfig where Key=@Key";
+            SQLiteParameter[] parameters = new SQLiteParameter[]{
+                new SQLiteParameter("@Key", "IP")
+             };
+            DataTable dt = db.ExecuteDataTable(sql, parameters);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                rs = dt.Rows[0].ItemArray[2].ToString();
+            }
+            parameters = new SQLiteParameter[]{
+                new SQLiteParameter("@Key", "Port")
+             };
+            dt = db.ExecuteDataTable(sql, parameters);
+            if (dt != null && dt.Rows.Count > 0)
+            {
+                rs += ":" + dt.Rows[0].ItemArray[2].ToString();
+            }
+            return rs;
+        }
+
+        public static string DownloadInvoiceDetail(string barcode)
+        {
+            string getString = string.Empty;
+            try
+            {
+                //string url = "http://192.168.1.193:82/KCHmt/HmtInvoiceApi/InvoiceDelResponce?seedID=0000000011-01";
+                barcode = "0000000004-01";
+                string url = "http://" + GetServer() + "/KCHmt/HmtInvoiceApi/InvoiceDelResponce?seedID=" + barcode;
+                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
+                httpWebRequest.Accept = "*/*";
+                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36";
+                httpWebRequest.Method = "GET";
+                WebResponse webResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                Stream getStream = webResponse.GetResponseStream();
+                StreamReader streamReader = new StreamReader(getStream, Encoding.UTF8);
+                getString = streamReader.ReadToEnd();
+                streamReader.Close();
+                getStream.Close();
+            }
+            catch (Exception ex)
+            {
+                getString = "Failed";
+            }
+            return getString;
+        }
+
+        public static string UploadInvoiceDetail(string postData)
+        {
+            string content = string.Empty;
+            try
+            {
+                string url = "http://" + GetServer() + "/KCHmt/HmtInvoiceApi/InvoiceCaseNumberRecall";
+                byte[] data = Encoding.UTF8.GetBytes("strdata=" + postData);
+                HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
+                request.Method = "POST";
+                request.ContentType = "application/x-www-form-urlencoded; charset=UTF-8";
+                request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36";
+                request.ContentLength = data.Length;
+                Stream newStream = request.GetRequestStream();
+                newStream.Write(data, 0, data.Length);
+                newStream.Close();
+                HttpWebResponse myResponse = (HttpWebResponse)request.GetResponse();
+                StreamReader reader = new StreamReader(myResponse.GetResponseStream(), Encoding.UTF8);
+                content = reader.ReadToEnd();
+            }
+            catch (Exception ex)
+            {
+                content = "Failed";
+            }
+            return content;
+        }
+
+        public static ResultModel GetValidateUser(string loginID, string pwd)
+        {
+            ResultModel result = new ResultModel()
+            {
+                IsSuccess = false,
+                Message = "登录失败"
+            };
+            try
+            {
+                string url = "http://" + GetServer() + "/KCHmt/HmtInvoiceApi/ValidateUser?LoginID=" + loginID + "&Password=" + SecurityHelp.GetStrMd5(pwd.ToLower());
+                HttpWebRequest httpWebRequest = (HttpWebRequest)HttpWebRequest.Create(url);
+                httpWebRequest.Accept = "*/*";
+                httpWebRequest.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/55.0.2883.87 Safari/537.36";
+                httpWebRequest.Method = "GET";
+                WebResponse webResponse = (HttpWebResponse)httpWebRequest.GetResponse();
+                Stream getStream = webResponse.GetResponseStream();
+                StreamReader streamReader = new StreamReader(getStream, Encoding.UTF8);
+                string getString = streamReader.ReadToEnd();
+                if (!string.IsNullOrEmpty(getString))
+                {
+                    result = JsonConvert.DeserializeObject<ResultModel>(getString);
+                }
+                streamReader.Close();
+                getStream.Close();
+            }
+            catch (Exception ex)
+            {
+            }
+            return result;
+        }
+
+    }
+}

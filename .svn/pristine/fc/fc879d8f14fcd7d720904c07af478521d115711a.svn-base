@@ -1,0 +1,58 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+
+namespace HomotorDepotMgr
+{
+    public partial class Alphabet : Form
+    {
+        public delegate void GetConfirmLetter(string letter);
+        public event GetConfirmLetter GetConfirmLetterDelegate;
+
+        private bool isCapital = true;
+
+        public Alphabet()
+        {
+            InitializeComponent();
+            btnCaps.ForeColor = Color.Red;
+        }
+
+        private void btnKeyCode_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            string letter = string.Empty;
+            if (isCapital)
+            {
+                letter = btn.Text.ToUpper();
+            }
+            else
+            {
+                letter = btn.Text.ToLower();
+            }
+            GetConfirmLetterDelegate(letter);
+            this.Close();
+        }
+
+        private void btnCaps_Click(object sender, EventArgs e)
+        {
+            Button btn = (Button)sender;
+            if (isCapital)
+            {
+                isCapital = false;
+                btn.ForeColor = Color.Black;
+            }
+            else
+            {
+                isCapital = true;
+                btn.ForeColor = Color.Red;
+            }
+        }
+
+
+    }
+}

@@ -1,0 +1,159 @@
+﻿namespace HomotorDepotMgr
+{
+    partial class Settings
+    {
+        /// <summary>
+        /// 必需的设计器变量。
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// 清理所有正在使用的资源。
+        /// </summary>
+        /// <param name="disposing">如果应释放托管资源，为 true；否则为 false。</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows 窗体设计器生成的代码
+
+        /// <summary>
+        /// 设计器支持所需的方法 - 不要
+        /// 使用代码编辑器修改此方法的内容。
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Settings));
+            this.label1 = new System.Windows.Forms.Label();
+            this.txtIPAddress = new System.Windows.Forms.TextBox();
+            this.btnSettingOK = new System.Windows.Forms.Button();
+            this.btnSettingCancel = new System.Windows.Forms.Button();
+            this.txtPort = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
+            this.btnClearHistory = new System.Windows.Forms.Button();
+            this.btnUpdateApp = new System.Windows.Forms.Button();
+            this.label4 = new System.Windows.Forms.Label();
+            this.SuspendLayout();
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(7, 30);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(63, 20);
+            this.label1.Text = "IP地址：";
+            // 
+            // txtIPAddress
+            // 
+            this.txtIPAddress.Location = new System.Drawing.Point(74, 28);
+            this.txtIPAddress.Name = "txtIPAddress";
+            this.txtIPAddress.Size = new System.Drawing.Size(161, 23);
+            this.txtIPAddress.TabIndex = 1;
+            // 
+            // btnSettingOK
+            // 
+            this.btnSettingOK.Location = new System.Drawing.Point(26, 215);
+            this.btnSettingOK.Name = "btnSettingOK";
+            this.btnSettingOK.Size = new System.Drawing.Size(72, 20);
+            this.btnSettingOK.TabIndex = 3;
+            this.btnSettingOK.Text = "确定";
+            this.btnSettingOK.Click += new System.EventHandler(this.btnSettingOK_Click);
+            // 
+            // btnSettingCancel
+            // 
+            this.btnSettingCancel.Location = new System.Drawing.Point(135, 215);
+            this.btnSettingCancel.Name = "btnSettingCancel";
+            this.btnSettingCancel.Size = new System.Drawing.Size(72, 20);
+            this.btnSettingCancel.TabIndex = 4;
+            this.btnSettingCancel.Text = "取消";
+            this.btnSettingCancel.Click += new System.EventHandler(this.btnSettingCancel_Click);
+            // 
+            // txtPort
+            // 
+            this.txtPort.Location = new System.Drawing.Point(74, 57);
+            this.txtPort.Name = "txtPort";
+            this.txtPort.Size = new System.Drawing.Size(161, 23);
+            this.txtPort.TabIndex = 2;
+            this.txtPort.Text = "80";
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(7, 59);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(63, 20);
+            this.label2.Text = "端口号：";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(7, 90);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(100, 20);
+            this.label3.Text = "清除登录历史";
+            // 
+            // btnClearHistory
+            // 
+            this.btnClearHistory.Location = new System.Drawing.Point(174, 90);
+            this.btnClearHistory.Name = "btnClearHistory";
+            this.btnClearHistory.Size = new System.Drawing.Size(61, 20);
+            this.btnClearHistory.TabIndex = 7;
+            this.btnClearHistory.Text = "清除";
+            this.btnClearHistory.Click += new System.EventHandler(this.btnClearHistory_Click);
+            // 
+            // btnUpdateApp
+            // 
+            this.btnUpdateApp.Location = new System.Drawing.Point(174, 115);
+            this.btnUpdateApp.Name = "btnUpdateApp";
+            this.btnUpdateApp.Size = new System.Drawing.Size(61, 20);
+            this.btnUpdateApp.TabIndex = 12;
+            this.btnUpdateApp.Text = "更新";
+            this.btnUpdateApp.Click += new System.EventHandler(this.btnUpdateApp_Click);
+            // 
+            // label4
+            // 
+            this.label4.Location = new System.Drawing.Point(7, 115);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(100, 20);
+            this.label4.Text = "版本更新";
+            // 
+            // Settings
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(238, 270);
+            this.Controls.Add(this.btnUpdateApp);
+            this.Controls.Add(this.label4);
+            this.Controls.Add(this.btnClearHistory);
+            this.Controls.Add(this.label3);
+            this.Controls.Add(this.txtPort);
+            this.Controls.Add(this.label2);
+            this.Controls.Add(this.btnSettingCancel);
+            this.Controls.Add(this.btnSettingOK);
+            this.Controls.Add(this.txtIPAddress);
+            this.Controls.Add(this.label1);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "Settings";
+            this.Text = "设置";
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.TextBox txtIPAddress;
+        private System.Windows.Forms.Button btnSettingOK;
+        private System.Windows.Forms.Button btnSettingCancel;
+        private System.Windows.Forms.TextBox txtPort;
+        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Button btnClearHistory;
+        private System.Windows.Forms.Button btnUpdateApp;
+        private System.Windows.Forms.Label label4;
+    }
+}

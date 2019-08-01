@@ -1,0 +1,117 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using HomotorDepotMgr.Utility;
+using System.Data.SQLite;
+
+namespace HomotorDepotMgr
+{
+    public partial class CaseDetailMgrEdit : Form
+    {
+        public delegate void GetCaseDetailEdit(int selection, int Num, string Barcode, string caseNumberID);
+        public event GetCaseDetailEdit GetCaseDetailEditDelegate;
+
+        private string Barcode;
+        private string caseNumberID;
+        private int oldNum;
+        MsgDialog msg = new MsgDialog();
+        Hook hkCaseDetailMgrEdit = new Hook("CaseDetailMgrEdit");
+        int keyCounter = 0;
+
+        public CaseDetailMgrEdit(string ProdName, string Model, string sNum, string Num, string Barcode, string caseNumberID)
+        {
+            InitializeComponent();
+            this.lblProdName.Text = ProdName;
+            this.lblModel.Text = Model;
+            this.lblsNum.Text = sNum;
+            this.txtNum.Text = Num;
+            this.oldNum = Convert.ToInt32(Num);
+            this.Barcode = Barcode;
+            this.caseNumberID = caseNumberID;
+            this.txtNum.SelectAll();
+            hkCaseDetailMgrEdit.KeyHandlerDelegate += new Hook.KeyHandler(hkCaseDetailMgrEdit_KeyHandlerDelegate);
+            hkCaseDetailMgrEdit.Start();
+        }
+
+        int hkCaseDetailMgrEdit_KeyHandlerDelegate(int vkCode, string clsName)
+        {
+            if (clsName.Equals("CaseDetailMgrEdit"))
+            {
+                if (vkCode == VirtualKey.VK_ENTER)
+                {
+                    keyCounter++;
+                    if (keyCounter == 2)
+                    {
+                        CaseDetailEditOKHandler();
+                        keyCounter = 0;
+                    }
+                    return -1;
+                }
+                if (vkCode == VirtualKey.VK_ESCAPE)
+                {
+                    CaseDetailEditCancelHandler();
+                    return -1;
+                }
+            }
+            return 0;
+        }
+
+        public void CaseDetailEditOKHandler()
+        {
+            try
+            {
+                int totalNum = 0;
+                int caseDetailNum = Convert.ToInt32(txtNum.Text);
+                int caseSNum = Convert.ToInt32(lblsNum.Text);
+                string sql = @"select SUM(Num) from CaseNumberDetail where Barcode=@Barcode";
+                SQLiteParameter[] parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@Barcode", this.Barcode)
+                };
+                SQLiteDBHelper db = new SQLiteDBHelper();
+                DataTable dt = db.ExecuteDataTable(sql, parameters);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    totalNum = Convert.ToInt32(dt.Rows[0][0]);
+                }
+                if ((totalNum + caseDetailNum - oldNum) > caseSNum)
+                {
+                    msg.ShowMessage("实发数量不能超过应发数量", 1);
+                }
+                else
+                {
+                    hkCaseDetailMgrEdit.Stop();
+                    GetCaseDetailEditDelegate(1, caseDetailNum, this.Barcode, this.caseNumberID);
+                    this.Close();
+                }
+            }
+            catch (Exception ex)
+            {
+                msg.ShowMessage("请输入数字", 1);
+            }
+        }
+
+        public void CaseDetailEditCancelHandler()
+        {
+            hkCaseDetailMgrEdit.Stop();
+            GetCaseDetailEditDelegate(0, 0, this.Barcode, this.caseNumberID);
+            this.Close();
+        }
+
+        private void btnEditOk_Click(object sender, EventArgs e)
+        {
+            CaseDetailEditOKHandler();
+        }
+
+        private void btnEditCancel_Click(object sender, EventArgs e)
+        {
+            CaseDetailEditCancelHandler();
+        }
+
+
+    }
+}

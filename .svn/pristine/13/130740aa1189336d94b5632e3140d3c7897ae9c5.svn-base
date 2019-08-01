@@ -1,0 +1,66 @@
+﻿namespace HomotorDepotMgr
+{
+    partial class CaseDetailMgr
+    {
+        /// <summary>
+        /// 必需的设计器变量。
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// 清理所有正在使用的资源。
+        /// </summary>
+        /// <param name="disposing">如果应释放托管资源，为 true；否则为 false。</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows 窗体设计器生成的代码
+
+        /// <summary>
+        /// 设计器支持所需的方法 - 不要
+        /// 使用代码编辑器修改此方法的内容。
+        /// </summary>
+        private void InitializeComponent()
+        {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CaseDetailMgr));
+            this.dgCaseDetailList = new System.Windows.Forms.DataGrid();
+            this.SuspendLayout();
+            // 
+            // dgCaseDetailList
+            // 
+            this.dgCaseDetailList.BackgroundColor = System.Drawing.Color.FromArgb(((int)(((byte)(128)))), ((int)(((byte)(128)))), ((int)(((byte)(128)))));
+            this.dgCaseDetailList.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.dgCaseDetailList.Location = new System.Drawing.Point(0, 0);
+            this.dgCaseDetailList.Name = "dgCaseDetailList";
+            this.dgCaseDetailList.Size = new System.Drawing.Size(238, 270);
+            this.dgCaseDetailList.TabIndex = 0;
+            this.dgCaseDetailList.CurrentCellChanged += new System.EventHandler(this.dgCaseDetailList_CurrentCellChanged);
+            this.dgCaseDetailList.GotFocus += new System.EventHandler(this.dgCaseDetailList_GotFocus);
+            // 
+            // CaseDetailMgr
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(238, 270);
+            this.Controls.Add(this.dgCaseDetailList);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "CaseDetailMgr";
+            this.Text = "配件明细";
+            this.Deactivate += new System.EventHandler(this.CaseDetailMgr_Deactivate);
+            this.Activated += new System.EventHandler(this.CaseDetailMgr_Activated);
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.DataGrid dgCaseDetailList;
+    }
+}

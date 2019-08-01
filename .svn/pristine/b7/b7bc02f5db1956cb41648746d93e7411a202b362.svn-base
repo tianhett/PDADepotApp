@@ -1,0 +1,15 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.Text;
+
+namespace HomotorDepotMgr.Model
+{
+    public class CaseNumberDetail
+    {
+        public string ID { get; set; }
+        public string CaseNumberID { get; set; }
+        public string ProdID { get; set; }
+        public string Num { get; set; }
+    }
+}

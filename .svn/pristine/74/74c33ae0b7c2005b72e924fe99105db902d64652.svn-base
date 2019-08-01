@@ -1,0 +1,363 @@
+﻿<Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003" ToolsVersion="3.5">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProductVersion>9.0.30729</ProductVersion>
+    <SchemaVersion>2.0</SchemaVersion>
+    <ProjectGuid>{D9993FD0-541A-45E3-ACC5-B1E264E15E07}</ProjectGuid>
+    <OutputType>WinExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>HomotorDepotMgr</RootNamespace>
+    <AssemblyName>HomotorDepotMgr</AssemblyName>
+    <ProjectTypeGuids>{4D628B5B-2FBC-4AA6-8C16-197242AEB884};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <PlatformFamilyName>WindowsCE</PlatformFamilyName>
+    <PlatformID>E2BECB1F-8C8C-41ba-B736-9BE7D946A398</PlatformID>
+    <OSVersion>5.0</OSVersion>
+    <DeployDirSuffix>HomotorDepotMgr</DeployDirSuffix>
+    <TargetFrameworkVersion>v3.5</TargetFrameworkVersion>
+    <NativePlatformName>Windows CE</NativePlatformName>
+    <FormFactorID>
+    </FormFactorID>
+    <ApplicationIcon>3232.ico</ApplicationIcon>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE;$(PlatformFamilyName)</DefineConstants>
+    <NoStdLib>true</NoStdLib>
+    <NoConfig>true</NoConfig>
+    <ErrorReport>prompt</ErrorReport>
+    <FileAlignment>512</FileAlignment>
+    <WarningLevel>4</WarningLevel>
+    <GenerateSerializationAssemblies>Off</GenerateSerializationAssemblies>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="AlphaMobileControls, Version=1.0.801.19338, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\AlphaMobileControls.dll</HintPath>
+    </Reference>
+    <Reference Include="D300.System, Version=2.0.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\D300.System.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsCE.Forms, Version=2.0.0.0, Culture=neutral, PublicKeyToken=969db8053d3322ac, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Microsoft.WindowsCE.Forms.dll</HintPath>
+    </Reference>
+    <Reference Include="mscorlib" />
+    <Reference Include="Newtonsoft.Json.Compact, Version=3.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\Newtonsoft.Json.Compact.dll</HintPath>
+    </Reference>
+    <Reference Include="SCAN.Scanner2D, Version=2.0.1.5, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\SCAN.Scanner2D.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.SQLite, Version=1.0.66.0, Culture=neutral, PublicKeyToken=1fdb50b1b62b4c84, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\lib\System.Data.SQLite.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlertBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlertBox.Designer.cs">
+      <DependentUpon>AlertBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Alphabet.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Alphabet.Designer.cs">
+      <DependentUpon>Alphabet.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseDetailDiffer.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseDetailDiffer.Designer.cs">
+      <DependentUpon>CaseDetailDiffer.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseDetailMgr.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseDetailMgr.Designer.cs">
+      <DependentUpon>CaseDetailMgr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseDetailMgrAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseDetailMgrAdd.Designer.cs">
+      <DependentUpon>CaseDetailMgrAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseDetailMgrBarcodeAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseDetailMgrBarcodeAdd.Designer.cs">
+      <DependentUpon>CaseDetailMgrBarcodeAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseDetailMgrEdit.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseDetailMgrEdit.Designer.cs">
+      <DependentUpon>CaseDetailMgrEdit.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseDetailMgrModelAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseDetailMgrModelAdd.Designer.cs">
+      <DependentUpon>CaseDetailMgrModelAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseDetailMgrModelAddSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseDetailMgrModelAddSearch.Designer.cs">
+      <DependentUpon>CaseDetailMgrModelAddSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseDetailMgrSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseDetailMgrSearch.Designer.cs">
+      <DependentUpon>CaseDetailMgrSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseMgr.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseMgr.Designer.cs">
+      <DependentUpon>CaseMgr.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseMgrAdd.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseMgrAdd.Designer.cs">
+      <DependentUpon>CaseMgrAdd.cs</DependentUpon>
+    </Compile>
+    <Compile Include="CaseMgrSearch.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="CaseMgrSearch.Designer.cs">
+      <DependentUpon>CaseMgrSearch.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Main.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Main.Designer.cs">
+      <DependentUpon>Main.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Model\CaseData.cs" />
+    <Compile Include="Model\CaseNumberEntity.cs" />
+    <Compile Include="Model\CaseNumberDetail.cs" />
+    <Compile Include="Model\FromERPDetailJson.cs" />
+    <Compile Include="Model\FromERPJson.cs" />
+    <Compile Include="Model\ResultModel.cs" />
+    <Compile Include="Model\SettingModel.cs" />
+    <Compile Include="Model\SysProduct.cs" />
+    <Compile Include="Model\vAPISysProduct.cs" />
+    <Compile Include="MsgBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="MsgBox.Designer.cs">
+      <DependentUpon>MsgBox.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ProductDetail.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="ProductDetail.Designer.cs">
+      <DependentUpon>ProductDetail.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="AlertBox.resx">
+      <DependentUpon>AlertBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Alphabet.resx">
+      <DependentUpon>Alphabet.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="AlphabetComplex.resx">
+      <DependentUpon>AlphabetComplex.cs</DependentUpon>
+      <SubType>Designer</SubType>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseDetailDiffer.resx">
+      <DependentUpon>CaseDetailDiffer.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseDetailMgr.resx">
+      <DependentUpon>CaseDetailMgr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseDetailMgrAdd.resx">
+      <DependentUpon>CaseDetailMgrAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseDetailMgrBarcodeAdd.resx">
+      <DependentUpon>CaseDetailMgrBarcodeAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseDetailMgrEdit.resx">
+      <DependentUpon>CaseDetailMgrEdit.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseDetailMgrModelAdd.resx">
+      <DependentUpon>CaseDetailMgrModelAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseDetailMgrModelAddSearch.resx">
+      <DependentUpon>CaseDetailMgrModelAddSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseDetailMgrSearch.resx">
+      <DependentUpon>CaseDetailMgrSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseMgr.resx">
+      <DependentUpon>CaseMgr.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseMgrAdd.resx">
+      <DependentUpon>CaseMgrAdd.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="CaseMgrSearch.resx">
+      <DependentUpon>CaseMgrSearch.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Main.resx">
+      <DependentUpon>Main.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="MsgBox.resx">
+      <DependentUpon>MsgBox.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="ProductDetail.resx">
+      <DependentUpon>ProductDetail.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Properties\Resources.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+      <SubType>Designer</SubType>
+      <LastGenOutput>Resources1.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Settings.resx">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="UserLogin.resx">
+      <DependentUpon>UserLogin.cs</DependentUpon>
+    </EmbeddedResource>
+    <Compile Include="Properties\Resources1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
+    <Compile Include="Settings.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Settings.Designer.cs">
+      <DependentUpon>Settings.cs</DependentUpon>
+    </Compile>
+    <Compile Include="UserLogin.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="UserLogin.Designer.cs">
+      <DependentUpon>UserLogin.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Utility\AlertBoxHelper.cs" />
+    <Compile Include="Utility\Cls_Message.cs" />
+    <Compile Include="Utility\DataUpDownload.cs" />
+    <Compile Include="Utility\GlobalShare.cs" />
+    <Compile Include="Utility\Hook.cs" />
+    <Compile Include="Utility\MsgDialog.cs" />
+    <Compile Include="Utility\SecurityHelp.cs" />
+    <Compile Include="Utility\SQLiteDBHelper.cs" />
+    <Compile Include="Utility\TerminalInfo.cs" />
+    <Compile Include="Utility\TimeService.cs" />
+    <Compile Include="Utility\VirtualKey.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="32.ico" />
+    <Content Include="3232.ico" />
+    <Content Include="48.ico" />
+    <Content Include="64.ico" />
+    <Content Include="D300SysUI.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\add.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\delete.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\error.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\eye.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="logoIcon.ico" />
+    <Content Include="logomain.ico" />
+    <Content Include="main.ico" />
+    <Content Include="Resources\information.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\login_lock.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\login_people.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="Resources\logo.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <None Include="Resources\question.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Include="Resources\warning.png">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <Content Include="SCAN.Scanner2D.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Scanner2DV.dll">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="SQLite.Interop.DLL">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AlphabetComplex.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="AlphabetComplex.Designer.cs">
+      <DependentUpon>AlphabetComplex.cs</DependentUpon>
+    </Compile>
+    <None Include="appDB.db">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+    <None Include="prodDB.db">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildBinPath)\Microsoft.CompactFramework.CSharp.targets" />
+  <ProjectExtensions>
+    <VisualStudio>
+      <FlavorProperties GUID="{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}">
+        <HostingProcess disable="1" />
+      </FlavorProperties>
+    </VisualStudio>
+  </ProjectExtensions>
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

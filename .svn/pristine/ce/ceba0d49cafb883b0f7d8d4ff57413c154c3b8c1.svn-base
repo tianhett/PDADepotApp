@@ -1,0 +1,285 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using SCAN.Scanner2D;
+using HomotorDepotMgr.Utility;
+using System.Data.SQLite;
+
+namespace HomotorDepotMgr
+{
+    public partial class CaseDetailMgrAdd : Form
+    {
+        private string caseNumberID = string.Empty;
+        private string barcode = string.Empty;
+        private string prodID = string.Empty;
+        private string prodBarcode = string.Empty;
+        SQLiteDBHelper db = new SQLiteDBHelper();
+        MsgDialog msg = new MsgDialog();
+        Hook hkCaseDetailMgrAdd = new Hook("CaseDetailMgrAdd");
+
+        public CaseDetailMgrAdd(string caseNumberID, string barcode)
+        {
+            InitializeComponent();
+            this.caseNumberID = caseNumberID;
+            this.barcode = barcode;
+            SetProdInfo(barcode, 0);
+            this.txtNum.SelectAll();
+            hkCaseDetailMgrAdd.KeyHandlerDelegate += new Hook.KeyHandler(hkCaseDetailMgrAdd_KeyHandlerDelegate);
+            hkCaseDetailMgrAdd.Start();
+        }
+
+        public void SetProdInfo(string barcode, int type)
+        {
+            try
+            {
+                if (type == 1)
+                {
+                    SaveDetail();
+                }
+                string sql = string.Empty;
+                SQLiteParameter[] parameters = null;
+                if (barcode.Contains("-"))
+                {
+                    //件码-数量
+                    string[] infoArray = barcode.Split(new char[] { '-' });
+                    sql = @"select * from FromERPDetail where Barcode=@Barcode";
+                    parameters = new SQLiteParameter[] {
+                        new SQLiteParameter("@Barcode", infoArray[0])
+                    };
+                    DataTable dtFirst = db.ExecuteDataTable(sql, parameters);
+                    if (dtFirst != null && dtFirst.Rows.Count > 0)
+                    {
+                        prodID = dtFirst.Rows[0]["ProdID"].ToString();
+                        prodBarcode = dtFirst.Rows[0]["Barcode"].ToString();
+                        lblProdName.Text = dtFirst.Rows[0]["ProdName"].ToString();
+                        lblModel.Text = dtFirst.Rows[0]["Model"].ToString();
+                        lblsNum.Text = dtFirst.Rows[0]["Num"].ToString();
+                        txtNum.Text = infoArray[1];
+                    }
+                }
+                else
+                {
+                    sql = @"select * from FromERPDetail where BoxBarcode=@BoxBarcode";
+                    parameters = new SQLiteParameter[] {
+                        new SQLiteParameter("@BoxBarcode", barcode)
+                    };
+                    DataTable partsDt = db.ExecuteDataTable(sql, parameters);
+                    if (partsDt != null && partsDt.Rows.Count > 0)
+                    {
+                        prodID = partsDt.Rows[0]["ProdID"].ToString();
+                        prodBarcode = partsDt.Rows[0]["Barcode"].ToString();
+                        lblProdName.Text = partsDt.Rows[0]["ProdName"].ToString();
+                        lblModel.Text = partsDt.Rows[0]["Model"].ToString();
+                        lblsNum.Text = partsDt.Rows[0]["Num"].ToString();
+                        txtNum.Text = partsDt.Rows[0]["NormNum"].ToString();
+                    }
+                    else
+                    {
+                        sql = @"select * from FromERPDetail where Barcode=@Barcode";
+                        parameters = new SQLiteParameter[] {
+                            new SQLiteParameter("@Barcode", barcode)
+                        };
+                        DataTable dtSecond = db.ExecuteDataTable(sql, parameters);
+                        if (dtSecond != null && dtSecond.Rows.Count > 0)
+                        {
+                            prodID = dtSecond.Rows[0]["ProdID"].ToString();
+                            prodBarcode = dtSecond.Rows[0]["Barcode"].ToString();
+                            lblProdName.Text = dtSecond.Rows[0]["ProdName"].ToString();
+                            lblModel.Text = dtSecond.Rows[0]["Model"].ToString();
+                            lblsNum.Text = dtSecond.Rows[0]["Num"].ToString();
+                            txtNum.Text = "1";
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        public void SaveDetail()
+        {
+            try
+            {
+                int totalNum = 0;
+                int caseDetailNum = Convert.ToInt32(txtNum.Text);
+                int caseSNum = Convert.ToInt32(lblsNum.Text);
+                string sql = @"select ifnull(SUM(Num),0) from CaseNumberDetail where Barcode=@Barcode and CaseNumberID<>@CaseNumberID";
+                SQLiteParameter[] parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@Barcode", this.prodBarcode),
+                    new SQLiteParameter("@CaseNumberID", this.caseNumberID)
+                };
+                DataTable dt = db.ExecuteDataTable(sql, parameters);
+                if (dt != null && dt.Rows.Count > 0)
+                {
+                    totalNum = Convert.ToInt32(dt.Rows[0][0]);
+                }
+                if ((totalNum + caseDetailNum) > caseSNum)
+                {
+                    msg.ShowMessage("实发数量不能超过应发数量", 1);
+                }
+                else
+                {
+                    sql = @"select * from CaseNumberDetail where Barcode=@Barcode and CaseNumberID=@CaseNumberID";
+                    DataTable partDt = db.ExecuteDataTable(sql, parameters);
+                    if (partDt != null && partDt.Rows.Count > 0)
+                    {
+                        sql = @"update CaseNumberDetail set Num=@Num where CaseNumberID=@CaseNumberID and Barcode=@Barcode";
+                        parameters = new SQLiteParameter[]{
+                            new SQLiteParameter("@Num", caseDetailNum),
+                            new SQLiteParameter("@CaseNumberID", this.caseNumberID),
+                            new SQLiteParameter("@Barcode", this.prodBarcode)
+                        };
+                        db.ExecuteNonQuery(sql, parameters);
+                    }
+                    else
+                    {
+                        sql = @"insert into CaseNumberDetail(ID,ProdID,Num,CaseNumberID,Barcode,CreateTime,LoginID)  
+                                    values (@ID,@ProdID,@Num,@CaseNumberID,@Barcode,@CreateTime,@LoginID)";
+                        parameters = new SQLiteParameter[]{
+                                new SQLiteParameter("@ID", Guid.NewGuid().ToString()),
+                                new SQLiteParameter("@ProdID", this.prodID),
+                                new SQLiteParameter("@Num", caseDetailNum),
+                                new SQLiteParameter("@CaseNumberID", this.caseNumberID),
+                                new SQLiteParameter("@Barcode", this.prodBarcode),
+                                new SQLiteParameter("@CreateTime", DateTime.Now.ToString()),
+                                new SQLiteParameter("@LoginID", GlobalShare.LoginID)
+                            };
+                        db.ExecuteNonQuery(sql, parameters);
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        int hkCaseDetailMgrAdd_KeyHandlerDelegate(int vkCode, string clsName)
+        {
+            if (clsName.Equals("CaseDetailMgrAdd"))
+            {
+                if (vkCode == VirtualKey.VK_ENTER)
+                {
+                    CaseDetailAddOKHandler();
+                    return -1;
+                }
+                if (vkCode == VirtualKey.VK_ESCAPE)
+                {
+                    CaseDetailAddCancelHandler();
+                    return -1;
+                }
+                if (vkCode == VirtualKey.VK_F1)
+                {
+                    CaseDetailAddDeleteHandler();
+                    return -1;
+                }
+            }
+            return 0;
+        }
+
+        public void CaseDetailAddOKHandler()
+        {
+            hkCaseDetailMgrAdd.Stop();
+            SaveDetail();
+            CaseDetailMgr detailFrm = new CaseDetailMgr(this.caseNumberID, "");
+            this.Close();
+            detailFrm.Show();
+        }
+
+        public void CaseDetailAddCancelHandler()
+        {
+            hkCaseDetailMgrAdd.Stop();
+            CaseDetailMgr detailFrm = new CaseDetailMgr(this.caseNumberID, "");
+            this.Close();
+            detailFrm.Show();
+        }
+
+        public void CaseDetailAddDeleteHandler()
+        {
+            hkCaseDetailMgrAdd.Stop();
+            MsgBox delMsgBox = new MsgBox("是否确认要删除该明细？", "警告", 3);
+            delMsgBox.ConfirmSelectionDelegate += new MsgBox.ConfirmSelection(delMsgBox_ConfirmSelectionDelegate);
+            delMsgBox.Show();
+        }
+
+        void delMsgBox_ConfirmSelectionDelegate(int selection)
+        {
+            if (selection == 1)
+            {
+                DeleteDetail();
+                CaseDetailMgr detailFrm = new CaseDetailMgr(this.caseNumberID, "");
+                this.Close();
+                detailFrm.Show();
+            }
+            else
+            {
+                hkCaseDetailMgrAdd.Start();
+            }
+        }
+
+        public void DeleteDetail()
+        {
+            try
+            {
+                string sql = @"delete from CaseNumberDetail where CaseNumberID=@CaseNumberID and Barcode=@Barcode";
+                SQLiteParameter[] parameters = new SQLiteParameter[]{
+                    new SQLiteParameter("@Barcode", this.prodBarcode),
+                    new SQLiteParameter("@CaseNumberID", this.caseNumberID)
+                };
+                db.ExecuteNonQuery(sql, parameters);
+            }
+            catch (Exception ex)
+            {
+            }
+        }
+
+        private void btnAddDel_Click(object sender, EventArgs e)
+        {
+            CaseDetailAddDeleteHandler();
+        }
+
+        private void btnAddCancel_Click(object sender, EventArgs e)
+        {
+            CaseDetailAddCancelHandler();
+        }
+
+        private void btnAddOk_Click(object sender, EventArgs e)
+        {
+            CaseDetailAddOKHandler();
+        }
+
+        private void CaseDetailMgrAdd_Activated(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent += new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Enable();//启用扫描
+        }
+
+        private void CaseDetailMgrAdd_Deactivate(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent -= new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Disable();//禁用扫描
+        }
+
+        void scanner_OnScanedEvent(Scanner.CodeInfo obj)
+        {
+            if (this.InvokeRequired)
+            {
+                Action<Scanner.CodeInfo> delegateFun = new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+                this.Invoke(delegateFun, obj);
+            }
+            else
+            {
+                if(!string.IsNullOrEmpty(obj.barcode))
+                {
+                    SetProdInfo(obj.barcode, 1);
+                }
+            }
+        }
+
+    }
+}

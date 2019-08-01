@@ -1,0 +1,189 @@
+﻿using System;
+using System.Linq;
+using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.Drawing;
+using System.Text;
+using System.Windows.Forms;
+using HomotorDepotMgr.Utility;
+using SCAN.Scanner2D;
+using HomotorDepotMgr.Model;
+using Newtonsoft.Json;
+using System.Data.SQLite;
+
+namespace HomotorDepotMgr
+{
+    public partial class ProductDetail : Form
+    {
+        Hook hkProductDetail = new Hook("hkProductDetail");
+        private string source = string.Empty;
+
+        public ProductDetail(string source)
+        {
+            InitializeComponent();
+            this.source = source;
+            hkProductDetail.KeyHandlerDelegate +=new Hook.KeyHandler(hkProductDetail_KeyHandlerDelegate);
+            hkProductDetail.Start();
+        }
+
+        int hkProductDetail_KeyHandlerDelegate(int vkCode, string clsName)
+        {
+            int result = 0;
+            if (clsName.Equals("hkProductDetail"))
+            {
+                switch (vkCode)
+                {
+                    case VirtualKey.VK_ESCAPE:
+                        hkProductDetail.Stop();
+                        if (source == "Main")
+                        {
+                            Cls_Message.SendMessage("仓库拣货", "ProductDetail");
+                        }
+                        else if (source == "CaseMgr")
+                        {
+                            //返回去箱号管理界面，刷新箱号管理的列表
+                            Cls_Message.SendMessage("箱号管理", "ProductDetail");
+                        }
+                        this.Close();
+                        result = -1;
+                        break;
+                }
+            }
+            return result;
+        }
+
+
+        private void ProductDetail_Activated(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent += new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Enable();//启用扫描
+        }
+
+        private void ProductDetail_Deactivate(object sender, EventArgs e)
+        {
+            Scanner.Instance().OnScanedEvent -= new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+            Scanner.Disable();//禁用扫描
+        }
+
+        void scanner_OnScanedEvent(Scanner.CodeInfo obj)
+        {
+            if (this.InvokeRequired)
+            {
+                Action<Scanner.CodeInfo> delegateFun = new Action<Scanner.CodeInfo>(scanner_OnScanedEvent);
+                this.Invoke(delegateFun, obj);
+            }
+            else
+            {
+                //填充产品详情
+                if (!string.IsNullOrEmpty(obj.barcode))
+                {
+                    hkProductDetail.Stop();
+                    SQLiteDBHelper helper = new SQLiteDBHelper("prodDB");
+                    //箱码
+                    string sql = @"select * from APISysProduct where BoxBarcode=@BoxBarcode";
+                    SQLiteParameter[]  parameters = new SQLiteParameter[] {
+                        new SQLiteParameter("@BoxBarcode", obj.barcode)
+                    };
+                    DataTable partsDt = helper.ExecuteDataTable(sql, parameters);
+                    if (partsDt != null && partsDt.Rows.Count > 0)
+                    {
+                        this.lblBrands.Text = partsDt.Rows[0]["Brands"].ToString();
+                        this.lblProdName.Text = partsDt.Rows[0]["ProdName"].ToString();
+                        this.lblModel.Text = partsDt.Rows[0]["Model"].ToString();
+                        this.lblNorm.Text = partsDt.Rows[0]["Norm"].ToString();
+                        this.lblClassName.Text = partsDt.Rows[0]["ClassName"].ToString();
+                        this.lblOrigCode.Text = partsDt.Rows[0]["OrigCode"].ToString();
+                        this.lblFMSICode.Text = partsDt.Rows[0]["FMSICode"].ToString();
+                        this.lblMaterial.Text = partsDt.Rows[0]["Material"].ToString();
+                        this.lblUnit.Text = partsDt.Rows[0]["Unit"].ToString();
+                        this.lblPlaceofOrigin.Text = partsDt.Rows[0]["PlaceofOrigin"].ToString();
+                        this.lblGW.Text = partsDt.Rows[0]["GW"].ToString();
+                        this.lblSize.Text = partsDt.Rows[0]["Size"].ToString();
+                        this.lblParameters.Text = partsDt.Rows[0]["Parameters"].ToString();
+                        this.lblSuitVehicles.Text = partsDt.Rows[0]["SuitVehicles"].ToString();
+                    }
+                    else
+                    {
+                        if (obj.barcode.Contains("-"))
+                        {
+                            //件码-数量
+                            string[] infoArray = obj.barcode.Split(new char[] { '-' });
+                            sql = @"select * from APISysProduct where Barcode=@Barcode";
+                            parameters = new SQLiteParameter[] {
+                                new SQLiteParameter("@Barcode", infoArray[0])
+                            };
+                            DataTable dtFirst = helper.ExecuteDataTable(sql, parameters);
+                            if (dtFirst != null && dtFirst.Rows.Count > 0)
+                            {
+                                this.lblBrands.Text = dtFirst.Rows[0]["Brands"].ToString();
+                                this.lblProdName.Text = dtFirst.Rows[0]["ProdName"].ToString();
+                                this.lblModel.Text = dtFirst.Rows[0]["Model"].ToString();
+                                this.lblNorm.Text = dtFirst.Rows[0]["Norm"].ToString();
+                                this.lblClassName.Text = dtFirst.Rows[0]["ClassName"].ToString();
+                                this.lblOrigCode.Text = dtFirst.Rows[0]["OrigCode"].ToString();
+                                this.lblFMSICode.Text = dtFirst.Rows[0]["FMSICode"].ToString();
+                                this.lblMaterial.Text = dtFirst.Rows[0]["Material"].ToString();
+                                this.lblUnit.Text = dtFirst.Rows[0]["Unit"].ToString();
+                                this.lblPlaceofOrigin.Text = dtFirst.Rows[0]["PlaceofOrigin"].ToString();
+                                this.lblGW.Text = dtFirst.Rows[0]["GW"].ToString();
+                                this.lblSize.Text = dtFirst.Rows[0]["Size"].ToString();
+                                this.lblParameters.Text = dtFirst.Rows[0]["Parameters"].ToString();
+                                this.lblSuitVehicles.Text = dtFirst.Rows[0]["SuitVehicles"].ToString();
+                            }
+                        }
+                        else
+                        {
+                            //自编条码
+                            sql = @"select * from APISysProduct where Barcode=@Barcode";
+                            parameters = new SQLiteParameter[] {
+                                new SQLiteParameter("@Barcode", obj.barcode)
+                            };
+                            DataTable dtSecond = helper.ExecuteDataTable(sql, parameters);
+                            if (dtSecond != null && dtSecond.Rows.Count > 0)
+                            {
+                                this.lblBrands.Text = dtSecond.Rows[0]["Brands"].ToString();
+                                this.lblProdName.Text = dtSecond.Rows[0]["ProdName"].ToString();
+                                this.lblModel.Text = dtSecond.Rows[0]["Model"].ToString();
+                                this.lblNorm.Text = dtSecond.Rows[0]["Norm"].ToString();
+                                this.lblClassName.Text = dtSecond.Rows[0]["ClassName"].ToString();
+                                this.lblOrigCode.Text = dtSecond.Rows[0]["OrigCode"].ToString();
+                                this.lblFMSICode.Text = dtSecond.Rows[0]["FMSICode"].ToString();
+                                this.lblMaterial.Text = dtSecond.Rows[0]["Material"].ToString();
+                                this.lblUnit.Text = dtSecond.Rows[0]["Unit"].ToString();
+                                this.lblPlaceofOrigin.Text = dtSecond.Rows[0]["PlaceofOrigin"].ToString();
+                                this.lblGW.Text = dtSecond.Rows[0]["GW"].ToString();
+                                this.lblSize.Text = dtSecond.Rows[0]["Size"].ToString();
+                                this.lblParameters.Text = dtSecond.Rows[0]["Parameters"].ToString();
+                                this.lblSuitVehicles.Text = dtSecond.Rows[0]["SuitVehicles"].ToString();
+                            }
+                        }
+                    }
+                    //string detailStrJson = DataUpDownload.GetProductDetail(obj.barcode);
+                    //if (!string.IsNullOrEmpty(detailStrJson) && !detailStrJson.Equals("\"\"") && !detailStrJson.Equals("Failed"))
+                    //{
+                    //    SysProduct model = JsonConvert.DeserializeObject<SysProduct>(detailStrJson);
+                    //this.lblBrands.Text = model.Brands;
+                    //this.lblProdName.Text = model.ProdName;
+                    //this.lblModel.Text = model.Model;
+                    //this.lblNorm.Text = model.Norm;
+                    //this.lblClassName.Text = model.ClassName;
+                    //this.lblOrigCode.Text = model.OrigCode;
+                    //this.lblFMSICode.Text = model.FMSICode;
+                    //this.lblMaterial.Text = model.Material;
+                    //this.lblUnit.Text = model.Unit;
+                    //this.lblPlaceofOrigin.Text = model.PlaceofOrigin;
+                    //this.lblGW.Text = model.GW;
+                    //this.lblSize.Text = model.Size;
+                    //this.lblParameters.Text = model.Parameters;
+                    //this.lblSuitVehicles.Text = model.SuitVehicles;
+                    //}
+                    hkProductDetail.Start();
+                }
+            }
+        }
+
+       
+
+    }
+}

@@ -1,0 +1,399 @@
+﻿namespace HomotorDepotMgr
+{
+    partial class Alphabet
+    {
+        /// <summary>
+        /// 必需的设计器变量。
+        /// </summary>
+        private System.ComponentModel.IContainer components = null;
+
+        /// <summary>
+        /// 清理所有正在使用的资源。
+        /// </summary>
+        /// <param name="disposing">如果应释放托管资源，为 true；否则为 false。</param>
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing && (components != null))
+            {
+                components.Dispose();
+            }
+            base.Dispose(disposing);
+        }
+
+        #region Windows 窗体设计器生成的代码
+
+        /// <summary>
+        /// 设计器支持所需的方法 - 不要
+        /// 使用代码编辑器修改此方法的内容。
+        /// </summary>
+        private void InitializeComponent()
+        {
+            this.btnA = new System.Windows.Forms.Button();
+            this.btnB = new System.Windows.Forms.Button();
+            this.btnC = new System.Windows.Forms.Button();
+            this.btnD = new System.Windows.Forms.Button();
+            this.btnI = new System.Windows.Forms.Button();
+            this.btnH = new System.Windows.Forms.Button();
+            this.btnG = new System.Windows.Forms.Button();
+            this.btnF = new System.Windows.Forms.Button();
+            this.btnN = new System.Windows.Forms.Button();
+            this.btnM = new System.Windows.Forms.Button();
+            this.btnL = new System.Windows.Forms.Button();
+            this.btnK = new System.Windows.Forms.Button();
+            this.btnS = new System.Windows.Forms.Button();
+            this.btnR = new System.Windows.Forms.Button();
+            this.btnQ = new System.Windows.Forms.Button();
+            this.btnP = new System.Windows.Forms.Button();
+            this.btnY = new System.Windows.Forms.Button();
+            this.btnX = new System.Windows.Forms.Button();
+            this.btnW = new System.Windows.Forms.Button();
+            this.btnV = new System.Windows.Forms.Button();
+            this.btnU = new System.Windows.Forms.Button();
+            this.btnCaps = new System.Windows.Forms.Button();
+            this.btnZ = new System.Windows.Forms.Button();
+            this.btnT = new System.Windows.Forms.Button();
+            this.btnO = new System.Windows.Forms.Button();
+            this.btnJ = new System.Windows.Forms.Button();
+            this.btnE = new System.Windows.Forms.Button();
+            this.SuspendLayout();
+            // 
+            // btnA
+            // 
+            this.btnA.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnA.Location = new System.Drawing.Point(6, 8);
+            this.btnA.Name = "btnA";
+            this.btnA.Size = new System.Drawing.Size(42, 38);
+            this.btnA.TabIndex = 0;
+            this.btnA.Text = "A";
+            this.btnA.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnB
+            // 
+            this.btnB.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnB.Location = new System.Drawing.Point(52, 8);
+            this.btnB.Name = "btnB";
+            this.btnB.Size = new System.Drawing.Size(42, 38);
+            this.btnB.TabIndex = 1;
+            this.btnB.Text = "B";
+            this.btnB.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnC
+            // 
+            this.btnC.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnC.Location = new System.Drawing.Point(98, 8);
+            this.btnC.Name = "btnC";
+            this.btnC.Size = new System.Drawing.Size(42, 38);
+            this.btnC.TabIndex = 2;
+            this.btnC.Text = "C";
+            this.btnC.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnD
+            // 
+            this.btnD.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnD.Location = new System.Drawing.Point(144, 8);
+            this.btnD.Name = "btnD";
+            this.btnD.Size = new System.Drawing.Size(42, 38);
+            this.btnD.TabIndex = 3;
+            this.btnD.Text = "D";
+            this.btnD.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnI
+            // 
+            this.btnI.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnI.Location = new System.Drawing.Point(144, 52);
+            this.btnI.Name = "btnI";
+            this.btnI.Size = new System.Drawing.Size(42, 38);
+            this.btnI.TabIndex = 8;
+            this.btnI.Text = "I";
+            this.btnI.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnH
+            // 
+            this.btnH.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnH.Location = new System.Drawing.Point(98, 52);
+            this.btnH.Name = "btnH";
+            this.btnH.Size = new System.Drawing.Size(42, 38);
+            this.btnH.TabIndex = 7;
+            this.btnH.Text = "H";
+            this.btnH.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnG
+            // 
+            this.btnG.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnG.Location = new System.Drawing.Point(52, 52);
+            this.btnG.Name = "btnG";
+            this.btnG.Size = new System.Drawing.Size(42, 38);
+            this.btnG.TabIndex = 6;
+            this.btnG.Text = "G";
+            this.btnG.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnF
+            // 
+            this.btnF.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnF.Location = new System.Drawing.Point(6, 52);
+            this.btnF.Name = "btnF";
+            this.btnF.Size = new System.Drawing.Size(42, 38);
+            this.btnF.TabIndex = 5;
+            this.btnF.Text = "F";
+            this.btnF.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnN
+            // 
+            this.btnN.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnN.Location = new System.Drawing.Point(144, 96);
+            this.btnN.Name = "btnN";
+            this.btnN.Size = new System.Drawing.Size(42, 38);
+            this.btnN.TabIndex = 13;
+            this.btnN.Text = "N";
+            this.btnN.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnM
+            // 
+            this.btnM.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnM.Location = new System.Drawing.Point(98, 96);
+            this.btnM.Name = "btnM";
+            this.btnM.Size = new System.Drawing.Size(42, 38);
+            this.btnM.TabIndex = 12;
+            this.btnM.Text = "M";
+            this.btnM.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnL
+            // 
+            this.btnL.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnL.Location = new System.Drawing.Point(52, 96);
+            this.btnL.Name = "btnL";
+            this.btnL.Size = new System.Drawing.Size(42, 38);
+            this.btnL.TabIndex = 11;
+            this.btnL.Text = "L";
+            this.btnL.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnK
+            // 
+            this.btnK.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnK.Location = new System.Drawing.Point(6, 96);
+            this.btnK.Name = "btnK";
+            this.btnK.Size = new System.Drawing.Size(42, 38);
+            this.btnK.TabIndex = 10;
+            this.btnK.Text = "K";
+            this.btnK.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnS
+            // 
+            this.btnS.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnS.Location = new System.Drawing.Point(144, 140);
+            this.btnS.Name = "btnS";
+            this.btnS.Size = new System.Drawing.Size(42, 38);
+            this.btnS.TabIndex = 18;
+            this.btnS.Text = "S";
+            this.btnS.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnR
+            // 
+            this.btnR.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnR.Location = new System.Drawing.Point(98, 140);
+            this.btnR.Name = "btnR";
+            this.btnR.Size = new System.Drawing.Size(42, 38);
+            this.btnR.TabIndex = 17;
+            this.btnR.Text = "R";
+            this.btnR.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnQ
+            // 
+            this.btnQ.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnQ.Location = new System.Drawing.Point(52, 140);
+            this.btnQ.Name = "btnQ";
+            this.btnQ.Size = new System.Drawing.Size(42, 38);
+            this.btnQ.TabIndex = 16;
+            this.btnQ.Text = "Q";
+            this.btnQ.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnP
+            // 
+            this.btnP.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnP.Location = new System.Drawing.Point(6, 140);
+            this.btnP.Name = "btnP";
+            this.btnP.Size = new System.Drawing.Size(42, 38);
+            this.btnP.TabIndex = 15;
+            this.btnP.Text = "P";
+            this.btnP.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnY
+            // 
+            this.btnY.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnY.Location = new System.Drawing.Point(190, 184);
+            this.btnY.Name = "btnY";
+            this.btnY.Size = new System.Drawing.Size(42, 38);
+            this.btnY.TabIndex = 24;
+            this.btnY.Text = "Y";
+            this.btnY.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnX
+            // 
+            this.btnX.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnX.Location = new System.Drawing.Point(144, 184);
+            this.btnX.Name = "btnX";
+            this.btnX.Size = new System.Drawing.Size(42, 38);
+            this.btnX.TabIndex = 23;
+            this.btnX.Text = "X";
+            this.btnX.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnW
+            // 
+            this.btnW.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnW.Location = new System.Drawing.Point(98, 184);
+            this.btnW.Name = "btnW";
+            this.btnW.Size = new System.Drawing.Size(42, 38);
+            this.btnW.TabIndex = 22;
+            this.btnW.Text = "W";
+            this.btnW.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnV
+            // 
+            this.btnV.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnV.Location = new System.Drawing.Point(52, 184);
+            this.btnV.Name = "btnV";
+            this.btnV.Size = new System.Drawing.Size(42, 38);
+            this.btnV.TabIndex = 21;
+            this.btnV.Text = "V";
+            this.btnV.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnU
+            // 
+            this.btnU.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnU.Location = new System.Drawing.Point(6, 184);
+            this.btnU.Name = "btnU";
+            this.btnU.Size = new System.Drawing.Size(42, 38);
+            this.btnU.TabIndex = 20;
+            this.btnU.Text = "U";
+            this.btnU.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnCaps
+            // 
+            this.btnCaps.Font = new System.Drawing.Font("Tahoma", 12F, System.Drawing.FontStyle.Bold);
+            this.btnCaps.Location = new System.Drawing.Point(52, 228);
+            this.btnCaps.Name = "btnCaps";
+            this.btnCaps.Size = new System.Drawing.Size(54, 38);
+            this.btnCaps.TabIndex = 26;
+            this.btnCaps.Text = "Caps";
+            this.btnCaps.Click += new System.EventHandler(this.btnCaps_Click);
+            // 
+            // btnZ
+            // 
+            this.btnZ.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnZ.Location = new System.Drawing.Point(6, 228);
+            this.btnZ.Name = "btnZ";
+            this.btnZ.Size = new System.Drawing.Size(42, 38);
+            this.btnZ.TabIndex = 25;
+            this.btnZ.Text = "Z";
+            this.btnZ.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnT
+            // 
+            this.btnT.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnT.Location = new System.Drawing.Point(190, 140);
+            this.btnT.Name = "btnT";
+            this.btnT.Size = new System.Drawing.Size(42, 38);
+            this.btnT.TabIndex = 19;
+            this.btnT.Text = "T";
+            this.btnT.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnO
+            // 
+            this.btnO.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnO.Location = new System.Drawing.Point(190, 96);
+            this.btnO.Name = "btnO";
+            this.btnO.Size = new System.Drawing.Size(42, 38);
+            this.btnO.TabIndex = 14;
+            this.btnO.Text = "O";
+            this.btnO.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnJ
+            // 
+            this.btnJ.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnJ.Location = new System.Drawing.Point(190, 52);
+            this.btnJ.Name = "btnJ";
+            this.btnJ.Size = new System.Drawing.Size(42, 38);
+            this.btnJ.TabIndex = 9;
+            this.btnJ.Text = "J";
+            this.btnJ.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // btnE
+            // 
+            this.btnE.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnE.Location = new System.Drawing.Point(190, 8);
+            this.btnE.Name = "btnE";
+            this.btnE.Size = new System.Drawing.Size(42, 38);
+            this.btnE.TabIndex = 4;
+            this.btnE.Text = "E";
+            this.btnE.Click += new System.EventHandler(this.btnKeyCode_Click);
+            // 
+            // Alphabet
+            // 
+            this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
+            this.AutoScroll = true;
+            this.ClientSize = new System.Drawing.Size(238, 270);
+            this.Controls.Add(this.btnCaps);
+            this.Controls.Add(this.btnZ);
+            this.Controls.Add(this.btnY);
+            this.Controls.Add(this.btnX);
+            this.Controls.Add(this.btnW);
+            this.Controls.Add(this.btnV);
+            this.Controls.Add(this.btnU);
+            this.Controls.Add(this.btnT);
+            this.Controls.Add(this.btnS);
+            this.Controls.Add(this.btnR);
+            this.Controls.Add(this.btnQ);
+            this.Controls.Add(this.btnP);
+            this.Controls.Add(this.btnO);
+            this.Controls.Add(this.btnN);
+            this.Controls.Add(this.btnM);
+            this.Controls.Add(this.btnL);
+            this.Controls.Add(this.btnK);
+            this.Controls.Add(this.btnJ);
+            this.Controls.Add(this.btnI);
+            this.Controls.Add(this.btnH);
+            this.Controls.Add(this.btnG);
+            this.Controls.Add(this.btnF);
+            this.Controls.Add(this.btnE);
+            this.Controls.Add(this.btnD);
+            this.Controls.Add(this.btnC);
+            this.Controls.Add(this.btnB);
+            this.Controls.Add(this.btnA);
+            this.Name = "Alphabet";
+            this.Text = "字母键盘";
+            this.ResumeLayout(false);
+
+        }
+
+        #endregion
+
+        private System.Windows.Forms.Button btnA;
+        private System.Windows.Forms.Button btnB;
+        private System.Windows.Forms.Button btnC;
+        private System.Windows.Forms.Button btnD;
+        private System.Windows.Forms.Button btnI;
+        private System.Windows.Forms.Button btnH;
+        private System.Windows.Forms.Button btnG;
+        private System.Windows.Forms.Button btnF;
+        private System.Windows.Forms.Button btnN;
+        private System.Windows.Forms.Button btnL;
+        private System.Windows.Forms.Button btnK;
+        private System.Windows.Forms.Button btnS;
+        private System.Windows.Forms.Button btnR;
+        private System.Windows.Forms.Button btnQ;
+        private System.Windows.Forms.Button btnP;
+        private System.Windows.Forms.Button btnY;
+        private System.Windows.Forms.Button btnX;
+        private System.Windows.Forms.Button btnW;
+        private System.Windows.Forms.Button btnV;
+        private System.Windows.Forms.Button btnU;
+        private System.Windows.Forms.Button btnCaps;
+        private System.Windows.Forms.Button btnZ;
+        private System.Windows.Forms.Button btnT;
+        private System.Windows.Forms.Button btnO;
+        private System.Windows.Forms.Button btnJ;
+        private System.Windows.Forms.Button btnE;
+        private System.Windows.Forms.Button btnM;
+    }
+}
