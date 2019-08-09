@@ -51,6 +51,7 @@
             this.Controls.Add(this.dgDifferList);
             this.Name = "CaseDetailDiffer";
             this.Text = "差异对比";
+            this.GotFocus += new System.EventHandler(this.CaseDetailDiffer_GotFocus);
             this.ResumeLayout(false);
 
         }

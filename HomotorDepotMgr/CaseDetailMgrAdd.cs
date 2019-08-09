@@ -35,6 +35,11 @@ namespace HomotorDepotMgr
             hkCaseDetailMgrAdd.Start();
         }
 
+        private void CaseDetailMgrAdd_GotFocus(object sender, EventArgs e)
+        {
+            //hkCaseDetailMgrAdd.Start();
+        }
+
         public void SetProdInfo(string barcode)
         {
             try
@@ -257,6 +262,7 @@ namespace HomotorDepotMgr
         public void CaseDetailAddOKHandler()
         {
             hkCaseDetailMgrAdd.Stop();
+            MsgDialog.WindowClose(this.caseNo + "号配件明细");
             CaseDetailMgr detailFrm = new CaseDetailMgr(this.caseNumberID, "", this.caseNo);
             this.Close();
             detailFrm.Show();
@@ -265,6 +271,7 @@ namespace HomotorDepotMgr
         public void CaseDetailAddCancelHandler()
         {
             hkCaseDetailMgrAdd.Stop();
+            MsgDialog.WindowClose(this.caseNo + "号配件明细");
             CaseDetailMgr detailFrm = new CaseDetailMgr(this.caseNumberID, "", this.caseNo);
             this.Close();
             detailFrm.Show();
@@ -283,6 +290,7 @@ namespace HomotorDepotMgr
             if (selection == 1)
             {
                 DeleteDetail();
+                MsgDialog.WindowClose(this.caseNo + "号配件明细");
                 CaseDetailMgr detailFrm = new CaseDetailMgr(this.caseNumberID, "", this.caseNo);
                 this.Close();
                 detailFrm.Show();

@@ -37,6 +37,7 @@ namespace HomotorDepotMgr.Utility
             hHookKey = SetWindowsHookEx(WH_KEYBOARD_LL, hookKeyDeleg, GetModuleHandle(null), 0);
             if (hHookKey == 0)
             {
+                SecurityHelp.WriteLog(this.clsName + "  Failed acquiring of the hook.");
                 throw new SystemException("Failed acquiring of the hook.");
             }
         }

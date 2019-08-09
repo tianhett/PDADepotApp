@@ -19,6 +19,7 @@ namespace HomotorDepotMgr
         SQLiteDBHelper db = new SQLiteDBHelper();
         MsgDialog msg = new MsgDialog();
         Cls_Message clsMessage;
+        private bool wholeCase = false;
 
         public CaseMgr(int type)
         {
@@ -32,6 +33,11 @@ namespace HomotorDepotMgr
             clsMessage.MessageHandlerDelegate += new Cls_Message.MessageHandler(clsMessage_MessageHandlerDelegate);
             hkCaseMgr.KeyHandlerDelegate += new Hook.KeyHandler(hkCaseMgr_KeyHandlerDelegate);
             hkCaseMgr.Start();
+        }
+
+        private void CaseMgr_GotFocus(object sender, EventArgs e)
+        {
+            //detailFrm_CaseDetailMgrWindowBackDegelate();
         }
 
         void clsMessage_MessageHandlerDelegate(IntPtr hWnd, string message)
@@ -74,24 +80,45 @@ namespace HomotorDepotMgr
             }
             else
             {
-                //跳到增加明细界面上
-                if (!string.IsNullOrEmpty(obj.barcode))
+                if (wholeCase)
                 {
                     hkCaseMgr.Stop();
-                    DataTable dt = (DataTable)dgCaseList.DataSource;
-                    if (dt != null && dt.Rows.Count > 0)
+                    CaseDetailMgrWholeCaseAdd detailAddFrm = new CaseDetailMgrWholeCaseAdd( obj.barcode);
+                    detailAddFrm.GetCaseDetailMgrWholeCaseAddDelegate += new CaseDetailMgrWholeCaseAdd.GetCaseDetailMgrWholeCaseAdd(detailAddFrm_GetCaseDetailMgrWholeCaseAddDelegate);
+                    detailAddFrm.Show();
+                }
+                else
+                {
+                    //跳到增加明细界面上
+                    if (!string.IsNullOrEmpty(obj.barcode))
                     {
-                        string caseNumberID = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[2].ToString();
-                        string caseNo = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[0].ToString();
-                        CaseDetailMgrAdd detailAddFrm = new CaseDetailMgrAdd(caseNumberID, obj.barcode, caseNo);
-                        detailAddFrm.Show();
-                    }
-                    else
-                    {
-                        msg.ShowMessage("请按F1键新建箱号", 1);
-                        hkCaseMgr.Start();
+                        hkCaseMgr.Stop();
+                        DataTable dt = (DataTable)dgCaseList.DataSource;
+                        if (dt != null && dt.Rows.Count > 0)
+                        {
+                            string caseNumberID = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[2].ToString();
+                            string caseNo = dt.Rows[dgCaseList.CurrentRowIndex].ItemArray[0].ToString();
+                            CaseDetailMgrAdd detailAddFrm = new CaseDetailMgrAdd(caseNumberID, obj.barcode, caseNo);
+                            detailAddFrm.Show();
+                        }
+                        else
+                        {
+                            msg.ShowMessage("请按F1键新建箱号", 1);
+                            hkCaseMgr.Start();
+                        }
                     }
                 }
+            }
+        }
+
+        void detailAddFrm_GetCaseDetailMgrWholeCaseAddDelegate(int selection)
+        {
+            hkCaseMgr.Start();
+            dgCaseList.Focus();
+            if (selection == 1)
+            {
+                detailFrm_CaseDetailMgrWindowBackDegelate();
+                dgCaseList.Focus();
             }
         }
 
@@ -170,6 +197,19 @@ namespace HomotorDepotMgr
                         break;
                     case VirtualKey.VK_F3:
                         ProductDetailHandler();
+                        result = -1;
+                        break;
+                    case VirtualKey.VK_F4:
+                        if (wholeCase)
+                        {
+                            wholeCase = false;
+                            lblInvoiceTitle.ForeColor = Color.DarkRed;
+                        }
+                        else
+                        {
+                            wholeCase = true;
+                            lblInvoiceTitle.ForeColor = Color.Yellow;
+                        }
                         result = -1;
                         break;
                 }
@@ -389,7 +429,6 @@ namespace HomotorDepotMgr
         }
         #endregion
 
-
         public void SetInvoiceTitle()
         {
             try
@@ -403,6 +442,7 @@ namespace HomotorDepotMgr
             }
         }
 
+        #region 刷新列表
         public void ReloadCaseData(string caseNo)
         {
             string sql = @"select CaseNumber as 箱号,ifnull(Total,0) as 箱件数,ID from CaseNumber order by CaseNumber";
@@ -476,6 +516,7 @@ namespace HomotorDepotMgr
             this.Activate();
             this.Focus();
         }
+        #endregion
 
         #region 整行选中模式
         private void dgCaseList_GotFocus(object sender, EventArgs e)
@@ -504,6 +545,7 @@ namespace HomotorDepotMgr
             }
         }
         #endregion
+
 
     }
 }

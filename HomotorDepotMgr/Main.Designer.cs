@@ -124,6 +124,7 @@ namespace HomotorDepotMgr
             this.Text = "仓库拣货";
             this.Activated += new System.EventHandler(this.Main_Activated);
             this.Deactivate += new System.EventHandler(this.Main_Deactivate);
+            this.GotFocus += new System.EventHandler(this.Main_GotFocus);
             this.ResumeLayout(false);
 
         }

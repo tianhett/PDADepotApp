@@ -38,6 +38,11 @@ namespace HomotorDepotMgr
             hkCaseMgrAdd.Start();
         }
 
+        private void CaseMgrAdd_GotFocus(object sender, EventArgs e)
+        {
+            //hkCaseMgrAdd.Start();
+        }
+
         int hkCaseMgrAdd_KeyHandlerDelegate(int vkCode, string clsName)
         {
             if(clsName.Equals("CaseMgrAdd"))

@@ -38,18 +38,18 @@
             // 
             // btnSearchBarcodeCancel
             // 
-            this.btnSearchBarcodeCancel.Location = new System.Drawing.Point(126, 101);
+            this.btnSearchBarcodeCancel.Location = new System.Drawing.Point(126, 123);
             this.btnSearchBarcodeCancel.Name = "btnSearchBarcodeCancel";
-            this.btnSearchBarcodeCancel.Size = new System.Drawing.Size(72, 20);
+            this.btnSearchBarcodeCancel.Size = new System.Drawing.Size(95, 40);
             this.btnSearchBarcodeCancel.TabIndex = 9;
             this.btnSearchBarcodeCancel.Text = "取消";
             this.btnSearchBarcodeCancel.Click += new System.EventHandler(this.btnSearchBarcodeCancel_Click);
             // 
             // btnSearchBarcodeOK
             // 
-            this.btnSearchBarcodeOK.Location = new System.Drawing.Point(34, 101);
+            this.btnSearchBarcodeOK.Location = new System.Drawing.Point(18, 123);
             this.btnSearchBarcodeOK.Name = "btnSearchBarcodeOK";
-            this.btnSearchBarcodeOK.Size = new System.Drawing.Size(72, 20);
+            this.btnSearchBarcodeOK.Size = new System.Drawing.Size(88, 40);
             this.btnSearchBarcodeOK.TabIndex = 8;
             this.btnSearchBarcodeOK.Text = "确定";
             this.btnSearchBarcodeOK.Click += new System.EventHandler(this.btnSearchBarcodeOK_Click);
@@ -70,9 +70,9 @@
             // 
             // btnBarcodeAlphabet
             // 
-            this.btnBarcodeAlphabet.Location = new System.Drawing.Point(34, 69);
+            this.btnBarcodeAlphabet.Location = new System.Drawing.Point(34, 72);
             this.btnBarcodeAlphabet.Name = "btnBarcodeAlphabet";
-            this.btnBarcodeAlphabet.Size = new System.Drawing.Size(164, 28);
+            this.btnBarcodeAlphabet.Size = new System.Drawing.Size(164, 38);
             this.btnBarcodeAlphabet.TabIndex = 10;
             this.btnBarcodeAlphabet.Text = "字母键盘";
             this.btnBarcodeAlphabet.Click += new System.EventHandler(this.btnBarcodeAlphabet_Click);
@@ -82,7 +82,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
-            this.ClientSize = new System.Drawing.Size(238, 138);
+            this.ClientSize = new System.Drawing.Size(238, 188);
             this.Controls.Add(this.btnBarcodeAlphabet);
             this.Controls.Add(this.btnSearchBarcodeCancel);
             this.Controls.Add(this.btnSearchBarcodeOK);
@@ -91,6 +91,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CaseDetailMgrBarcodeAdd";
             this.Text = "添加产品";
+            this.GotFocus += new System.EventHandler(this.CaseDetailMgrBarcodeAdd_GotFocus);
             this.ResumeLayout(false);
 
         }

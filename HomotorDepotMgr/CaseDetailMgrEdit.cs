@@ -72,6 +72,11 @@ namespace HomotorDepotMgr
             hkCaseDetailMgrEdit.Start();
         }
 
+        private void CaseDetailMgrEdit_GotFocus(object sender, EventArgs e)
+        {
+            //hkCaseDetailMgrEdit.Start();
+        }
+
         int hkCaseDetailMgrEdit_KeyHandlerDelegate(int vkCode, string clsName)
         {
             if (clsName.Equals("CaseDetailMgrEdit"))

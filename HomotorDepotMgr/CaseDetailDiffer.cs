@@ -26,6 +26,11 @@ namespace HomotorDepotMgr
             ReloadDifferData();
         }
 
+        private void CaseDetailDiffer_GotFocus(object sender, EventArgs e)
+        {
+            //hkCaseDetailDiffer.Start();
+        }
+
         int hkCaseDetailDiffer_KeyHandlerDelegate(int vkCode, string clsName)
         {
             int result = 0;

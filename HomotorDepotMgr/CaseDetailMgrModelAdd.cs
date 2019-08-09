@@ -34,6 +34,11 @@ namespace HomotorDepotMgr
             hkCaseDetailMgrModelAdd.Start();
         }
 
+        private void CaseDetailMgrModelAdd_GotFocus(object sender, EventArgs e)
+        {
+            //hkCaseDetailMgrModelAdd.Start();
+        }
+
         public void SetProdInfo(string model)
         {
             try
@@ -170,6 +175,7 @@ namespace HomotorDepotMgr
                 {
                     SaveDetail(Convert.ToInt32(lblTotalNum.Text));
                     hkCaseDetailMgrModelAdd.Stop();
+                    MsgDialog.WindowClose(this.caseNo + "号配件明细");
                     CaseDetailMgr detailFrm = new CaseDetailMgr(this.caseNumberID, "", this.caseNo);
                     this.Close();
                     detailFrm.Show();
@@ -180,6 +186,7 @@ namespace HomotorDepotMgr
         public void CaseDetailAddCancelHandler()
         {
             hkCaseDetailMgrModelAdd.Stop();
+            MsgDialog.WindowClose(this.caseNo + "号配件明细");
             CaseDetailMgr detailFrm = new CaseDetailMgr(this.caseNumberID, "", this.caseNo);
             this.Close();
             detailFrm.Show();
@@ -198,6 +205,7 @@ namespace HomotorDepotMgr
             if (selection == 1)
             {
                 DeleteDetail();
+                MsgDialog.WindowClose(this.caseNo + "号配件明细");
                 CaseDetailMgr detailFrm = new CaseDetailMgr(this.caseNumberID, "", this.caseNo);
                 this.Close();
                 detailFrm.Show();

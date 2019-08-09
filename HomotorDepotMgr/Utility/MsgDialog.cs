@@ -9,6 +9,9 @@ namespace HomotorDepotMgr.Utility
 {
     public class MsgDialog
     {
+        [DllImport("coredll.dll", EntryPoint = "SetForegroundWindow", CharSet = CharSet.Auto)]
+        public static extern void SetForegroundWindow(IntPtr hwnd);
+
         [DllImport("coredll.dll", EntryPoint = "FindWindow", CharSet = CharSet.Auto)]
         internal static extern IntPtr FindWindow(string className, string windowName);
 
@@ -155,6 +158,25 @@ namespace HomotorDepotMgr.Utility
             }
         }
 
+        #region 其他
+        public static void WindowClose(string windowName)
+        {
+            IntPtr ptr = FindWindow(null, windowName);
+            if (ptr != IntPtr.Zero)
+            {
+                PostMessage(ptr, WM_CLOSE, IntPtr.Zero, IntPtr.Zero);
+            }
+        }
+
+        public static void ActivateWindow(string windowName)
+        {
+            IntPtr ptr = FindWindow(null, windowName);
+            if (ptr != IntPtr.Zero)
+            {
+                SetForegroundWindow(ptr);
+            }
+        }
+        #endregion
 
     }
 }

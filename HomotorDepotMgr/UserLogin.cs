@@ -37,6 +37,11 @@ namespace HomotorDepotMgr
             LoadLoginInfo();
         }
 
+        private void UserLogin_GotFocus(object sender, EventArgs e)
+        {
+            //hkUserLogin.Start();
+        }
+
         int hkUserLogin_KeyHandlerDelegate(int vkCode, string clsName)
         {
             int result = 0;

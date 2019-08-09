@@ -27,6 +27,11 @@ namespace HomotorDepotMgr
             hkCaseDetailMgrSearch.Start();
         }
 
+        private void CaseDetailMgrSearch_GotFocus(object sender, EventArgs e)
+        {
+            //hkCaseDetailMgrSearch.Start();
+        }
+
         int hkCaseDetailMgrSearch_KeyHandlerDelegate(int vkCode, string clsName)
         {
             if (clsName.Equals("CaseDetailMgrSearch"))

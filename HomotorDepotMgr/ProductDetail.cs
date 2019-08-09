@@ -27,6 +27,11 @@ namespace HomotorDepotMgr
             hkProductDetail.Start();
         }
 
+        private void ProductDetail_GotFocus(object sender, EventArgs e)
+        {
+            //hkProductDetail.Start();
+        }
+
         int hkProductDetail_KeyHandlerDelegate(int vkCode, string clsName)
         {
             int result = 0;

@@ -46,6 +46,11 @@ namespace HomotorDepotMgr
             CheckNewVersion();
         }
 
+        private void Main_GotFocus(object sender, EventArgs e)
+        {
+            //hkMain.Start();
+        }
+
         void clsMessage_MessageHandlerDelegate(IntPtr hWnd, string message)
         {
             if (hWnd == this.Handle)
@@ -738,6 +743,7 @@ namespace HomotorDepotMgr
             hkMain.Start();
         }
         #endregion
+
 
     }
 }

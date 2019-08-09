@@ -163,6 +163,7 @@
             this.Text = "配件明细添加";
             this.Deactivate += new System.EventHandler(this.CaseDetailMgrAdd_Deactivate);
             this.Activated += new System.EventHandler(this.CaseDetailMgrAdd_Activated);
+            this.GotFocus += new System.EventHandler(this.CaseDetailMgrAdd_GotFocus);
             this.ResumeLayout(false);
 
         }

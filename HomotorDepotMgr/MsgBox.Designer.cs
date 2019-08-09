@@ -80,6 +80,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MsgBox";
             this.Text = "MsgBox";
+            this.GotFocus += new System.EventHandler(this.MsgBox_GotFocus);
             this.ResumeLayout(false);
 
         }

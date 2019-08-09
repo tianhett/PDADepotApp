@@ -45,6 +45,11 @@ namespace HomotorDepotMgr
             hkMsgBox.Start();
         }
 
+        private void MsgBox_GotFocus(object sender, EventArgs e)
+        {
+            //hkMsgBox.Start();
+        }
+
         int hkMsgBox_KeyHandlerDelegate(int vkCode, string clsName)
         {
             if (clsName.Equals("MsgBoxHook"))

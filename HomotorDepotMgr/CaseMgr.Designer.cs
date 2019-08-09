@@ -75,6 +75,7 @@
             this.Text = "箱号管理";
             this.Deactivate += new System.EventHandler(this.CaseMgr_Deactivate);
             this.Activated += new System.EventHandler(this.CaseMgr_Activated);
+            this.GotFocus += new System.EventHandler(this.CaseMgr_GotFocus);
             this.ResumeLayout(false);
 
         }

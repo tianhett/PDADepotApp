@@ -28,6 +28,7 @@ namespace HomotorDepotMgr
         SQLiteDBHelper db = new SQLiteDBHelper();
         MsgDialog msgDialog = new MsgDialog();
         string path = System.IO.Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase);
+        private int inputFocusIndex = 0;
 
         public Settings()
         {
@@ -35,6 +36,11 @@ namespace HomotorDepotMgr
             ReloadSettings();
             hkSettings.KeyHandlerDelegate += new Hook.KeyHandler(hkSettings_KeyHandlerDelegate);
             hkSettings.Start();
+        }
+
+        private void Settings_GotFocus(object sender, EventArgs e)
+        {
+            //hkSettings.Start();
         }
 
         int hkSettings_KeyHandlerDelegate(int vkCode, string clsName)
@@ -372,6 +378,44 @@ namespace HomotorDepotMgr
             {
                 msgDialog.ShowMessage("产品数据更新失败", 1);
             }
+        }
+
+        private void btnAlphabet_Click(object sender, EventArgs e)
+        {
+            hkSettings.Stop();
+            AlphabetComplex letterFrm = new AlphabetComplex();
+            letterFrm.GetConfirmLetterDelegate += new AlphabetComplex.GetConfirmLetter(letterFrm_GetConfirmLetterDelegate);
+            letterFrm.Show();
+        }
+
+        void letterFrm_GetConfirmLetterDelegate(int selection, string letter)
+        {
+            if (selection == 1)
+            {
+                if (inputFocusIndex == 0)
+                {
+                    txtIPAddress.Text = letter;
+                    txtIPAddress.Focus();
+                    txtIPAddress.SelectionStart = txtIPAddress.Text.Length;
+                }
+                else if (inputFocusIndex == 1)
+                {
+                    txtPort.Text = letter;
+                    txtPort.Focus();
+                    txtPort.SelectionStart = txtPort.Text.Length;
+                }
+            }
+            hkSettings.Start();
+        }
+
+        private void txtIPAddress_GotFocus(object sender, EventArgs e)
+        {
+            inputFocusIndex = 0;
+        }
+
+        private void txtPort_GotFocus(object sender, EventArgs e)
+        {
+            inputFocusIndex = 1;
         }
 
         //#region 检测最新版本

@@ -41,6 +41,7 @@
             this.label4 = new System.Windows.Forms.Label();
             this.btnUpProdData = new System.Windows.Forms.Button();
             this.label5 = new System.Windows.Forms.Label();
+            this.btnAlphabet = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // label1
@@ -56,19 +57,20 @@
             this.txtIPAddress.Name = "txtIPAddress";
             this.txtIPAddress.Size = new System.Drawing.Size(161, 23);
             this.txtIPAddress.TabIndex = 1;
+            this.txtIPAddress.GotFocus += new System.EventHandler(this.txtIPAddress_GotFocus);
             // 
             // btnSettingOK
             // 
-            this.btnSettingOK.Location = new System.Drawing.Point(26, 215);
+            this.btnSettingOK.Location = new System.Drawing.Point(7, 215);
             this.btnSettingOK.Name = "btnSettingOK";
-            this.btnSettingOK.Size = new System.Drawing.Size(72, 20);
+            this.btnSettingOK.Size = new System.Drawing.Size(66, 20);
             this.btnSettingOK.TabIndex = 3;
             this.btnSettingOK.Text = "确定";
             this.btnSettingOK.Click += new System.EventHandler(this.btnSettingOK_Click);
             // 
             // btnSettingCancel
             // 
-            this.btnSettingCancel.Location = new System.Drawing.Point(135, 215);
+            this.btnSettingCancel.Location = new System.Drawing.Point(80, 215);
             this.btnSettingCancel.Name = "btnSettingCancel";
             this.btnSettingCancel.Size = new System.Drawing.Size(72, 20);
             this.btnSettingCancel.TabIndex = 4;
@@ -82,6 +84,7 @@
             this.txtPort.Size = new System.Drawing.Size(161, 23);
             this.txtPort.TabIndex = 2;
             this.txtPort.Text = "80";
+            this.txtPort.GotFocus += new System.EventHandler(this.txtPort_GotFocus);
             // 
             // label2
             // 
@@ -138,12 +141,22 @@
             this.label5.Size = new System.Drawing.Size(100, 20);
             this.label5.Text = "更新产品数据";
             // 
+            // btnAlphabet
+            // 
+            this.btnAlphabet.Location = new System.Drawing.Point(158, 215);
+            this.btnAlphabet.Name = "btnAlphabet";
+            this.btnAlphabet.Size = new System.Drawing.Size(73, 20);
+            this.btnAlphabet.TabIndex = 59;
+            this.btnAlphabet.Text = "字母键盘";
+            this.btnAlphabet.Click += new System.EventHandler(this.btnAlphabet_Click);
+            // 
             // Settings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(96F, 96F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Dpi;
             this.AutoScroll = true;
             this.ClientSize = new System.Drawing.Size(238, 270);
+            this.Controls.Add(this.btnAlphabet);
             this.Controls.Add(this.btnUpProdData);
             this.Controls.Add(this.label5);
             this.Controls.Add(this.btnUpdateApp);
@@ -159,6 +172,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Settings";
             this.Text = "设置";
+            this.GotFocus += new System.EventHandler(this.Settings_GotFocus);
             this.ResumeLayout(false);
 
         }
@@ -177,5 +191,6 @@
         private System.Windows.Forms.Label label4;
         private System.Windows.Forms.Button btnUpProdData;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Button btnAlphabet;
     }
 }

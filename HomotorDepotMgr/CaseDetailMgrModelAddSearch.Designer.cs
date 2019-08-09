@@ -89,6 +89,7 @@
             this.Controls.Add(this.label1);
             this.Name = "CaseDetailMgrModelAddSearch";
             this.Text = "添加产品";
+            this.GotFocus += new System.EventHandler(this.CaseDetailMgrModelAddSearch_GotFocus);
             this.ResumeLayout(false);
 
         }

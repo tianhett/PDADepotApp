@@ -3,6 +3,8 @@ using System.Linq;
 using System.Collections.Generic;
 using System.Text;
 using System.Security.Cryptography;
+using System.IO;
+using System.Reflection;
 
 namespace HomotorDepotMgr.Utility
 {
@@ -15,5 +17,26 @@ namespace HomotorDepotMgr.Utility
             t2 = t2.Replace("-", "");
             return t2;
         }
+
+        /// <summary>
+        /// 写文件
+        /// </summary>
+        /// <param name="str"></param>
+        public static void WriteLog(string content)
+        {
+            string dir = Path.GetDirectoryName(Assembly.GetExecutingAssembly().GetName().CodeBase) + @"\Logs\";
+            if (!Directory.Exists(dir))
+            {
+                Directory.CreateDirectory(dir);
+            }
+            string path = dir + DateTime.Now.ToString("yyyyMMddHHmmss") + ".txt";
+            using (var sw = new StreamWriter(path, true))
+            {
+                sw.WriteLine(content);
+                sw.WriteLine("---------------------------------------------------------");
+                sw.Close();
+            }
+        }
+
     }
 }

@@ -32,6 +32,11 @@ namespace HomotorDepotMgr
             hkCaseDetailMgrBarcodeAdd.Start();
         }
 
+        private void CaseDetailMgrBarcodeAdd_GotFocus(object sender, EventArgs e)
+        {
+            //hkCaseDetailMgrBarcodeAdd.Start();
+        }
+
         int hkCaseDetailMgrBarcodeAdd_KeyHandlerDelegate(int vkCode, string clsName)
         {
             if (clsName.Equals("CaseDetailMgrBarcodeAdd"))

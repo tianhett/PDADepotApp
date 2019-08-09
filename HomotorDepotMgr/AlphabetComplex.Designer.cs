@@ -884,6 +884,7 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "AlphabetComplex";
             this.Text = "字母键盘";
+            this.GotFocus += new System.EventHandler(this.AlphabetComplex_GotFocus);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);

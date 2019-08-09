@@ -292,6 +292,7 @@
             this.Text = "配件详情";
             this.Deactivate += new System.EventHandler(this.ProductDetail_Deactivate);
             this.Activated += new System.EventHandler(this.ProductDetail_Activated);
+            this.GotFocus += new System.EventHandler(this.ProductDetail_GotFocus);
             this.ResumeLayout(false);
 
         }

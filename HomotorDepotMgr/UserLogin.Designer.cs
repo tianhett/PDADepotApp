@@ -112,6 +112,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "UserLogin";
             this.Text = "登录";
+            this.GotFocus += new System.EventHandler(this.UserLogin_GotFocus);
             this.ResumeLayout(false);
 
         }

@@ -33,6 +33,11 @@ namespace HomotorDepotMgr
             hkAlphabetComplex.Start();
         }
 
+        private void AlphabetComplex_GotFocus(object sender, EventArgs e)
+        {
+            //hkAlphabetComplex.Start();
+        }
+
         private void InitInputBox()
         {
             txtResult = new TextBox();

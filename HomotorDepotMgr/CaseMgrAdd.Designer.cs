@@ -91,6 +91,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CaseMgrAdd";
             this.Text = "添加箱号";
+            this.GotFocus += new System.EventHandler(this.CaseMgrAdd_GotFocus);
             this.ResumeLayout(false);
 
         }

@@ -55,6 +55,7 @@
             this.Text = "配件明细";
             this.Deactivate += new System.EventHandler(this.CaseDetailMgr_Deactivate);
             this.Activated += new System.EventHandler(this.CaseDetailMgr_Activated);
+            this.GotFocus += new System.EventHandler(this.CaseDetailMgr_GotFocus);
             this.ResumeLayout(false);
 
         }

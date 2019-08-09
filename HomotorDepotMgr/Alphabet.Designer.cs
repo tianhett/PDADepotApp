@@ -30,7 +30,6 @@
         {
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage1 = new System.Windows.Forms.TabPage();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
             this.btnCaps = new System.Windows.Forms.Button();
             this.btnZ = new System.Windows.Forms.Button();
             this.btnY = new System.Windows.Forms.Button();
@@ -58,18 +57,10 @@
             this.btnC = new System.Windows.Forms.Button();
             this.btnB = new System.Windows.Forms.Button();
             this.btnA = new System.Windows.Forms.Button();
-            this.tabPage3 = new System.Windows.Forms.TabPage();
-            this.btn1 = new System.Windows.Forms.Button();
-            this.btn2 = new System.Windows.Forms.Button();
-            this.btn3 = new System.Windows.Forms.Button();
-            this.btn6 = new System.Windows.Forms.Button();
-            this.btn5 = new System.Windows.Forms.Button();
-            this.btn4 = new System.Windows.Forms.Button();
-            this.btn9 = new System.Windows.Forms.Button();
-            this.btn8 = new System.Windows.Forms.Button();
-            this.btn7 = new System.Windows.Forms.Button();
-            this.btnDot = new System.Windows.Forms.Button();
-            this.btn0 = new System.Windows.Forms.Button();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.button27 = new System.Windows.Forms.Button();
+            this.button29 = new System.Windows.Forms.Button();
+            this.button30 = new System.Windows.Forms.Button();
             this.button1 = new System.Windows.Forms.Button();
             this.button2 = new System.Windows.Forms.Button();
             this.button3 = new System.Windows.Forms.Button();
@@ -96,9 +87,18 @@
             this.button24 = new System.Windows.Forms.Button();
             this.button25 = new System.Windows.Forms.Button();
             this.button26 = new System.Windows.Forms.Button();
-            this.button27 = new System.Windows.Forms.Button();
-            this.button29 = new System.Windows.Forms.Button();
-            this.button30 = new System.Windows.Forms.Button();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.btnDot = new System.Windows.Forms.Button();
+            this.btn0 = new System.Windows.Forms.Button();
+            this.btn9 = new System.Windows.Forms.Button();
+            this.btn8 = new System.Windows.Forms.Button();
+            this.btn7 = new System.Windows.Forms.Button();
+            this.btn6 = new System.Windows.Forms.Button();
+            this.btn5 = new System.Windows.Forms.Button();
+            this.btn4 = new System.Windows.Forms.Button();
+            this.btn3 = new System.Windows.Forms.Button();
+            this.btn2 = new System.Windows.Forms.Button();
+            this.btn1 = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
             this.tabPage2.SuspendLayout();
@@ -150,42 +150,6 @@
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Size = new System.Drawing.Size(230, 241);
             this.tabPage1.Text = "字母";
-            // 
-            // tabPage2
-            // 
-            this.tabPage2.Controls.Add(this.button27);
-            this.tabPage2.Controls.Add(this.button29);
-            this.tabPage2.Controls.Add(this.button30);
-            this.tabPage2.Controls.Add(this.button1);
-            this.tabPage2.Controls.Add(this.button2);
-            this.tabPage2.Controls.Add(this.button3);
-            this.tabPage2.Controls.Add(this.button4);
-            this.tabPage2.Controls.Add(this.button5);
-            this.tabPage2.Controls.Add(this.button6);
-            this.tabPage2.Controls.Add(this.button7);
-            this.tabPage2.Controls.Add(this.button8);
-            this.tabPage2.Controls.Add(this.button9);
-            this.tabPage2.Controls.Add(this.button10);
-            this.tabPage2.Controls.Add(this.button11);
-            this.tabPage2.Controls.Add(this.button12);
-            this.tabPage2.Controls.Add(this.button13);
-            this.tabPage2.Controls.Add(this.button14);
-            this.tabPage2.Controls.Add(this.button15);
-            this.tabPage2.Controls.Add(this.button16);
-            this.tabPage2.Controls.Add(this.button17);
-            this.tabPage2.Controls.Add(this.button18);
-            this.tabPage2.Controls.Add(this.button19);
-            this.tabPage2.Controls.Add(this.button20);
-            this.tabPage2.Controls.Add(this.button21);
-            this.tabPage2.Controls.Add(this.button22);
-            this.tabPage2.Controls.Add(this.button23);
-            this.tabPage2.Controls.Add(this.button24);
-            this.tabPage2.Controls.Add(this.button25);
-            this.tabPage2.Controls.Add(this.button26);
-            this.tabPage2.Location = new System.Drawing.Point(4, 25);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Size = new System.Drawing.Size(230, 241);
-            this.tabPage2.Text = "符号";
             // 
             // btnCaps
             // 
@@ -457,133 +421,71 @@
             this.btnA.Text = "A";
             this.btnA.Click += new System.EventHandler(this.btnKeyCode_Click);
             // 
-            // tabPage3
+            // tabPage2
             // 
-            this.tabPage3.Controls.Add(this.btnDot);
-            this.tabPage3.Controls.Add(this.btn0);
-            this.tabPage3.Controls.Add(this.btn9);
-            this.tabPage3.Controls.Add(this.btn8);
-            this.tabPage3.Controls.Add(this.btn7);
-            this.tabPage3.Controls.Add(this.btn6);
-            this.tabPage3.Controls.Add(this.btn5);
-            this.tabPage3.Controls.Add(this.btn4);
-            this.tabPage3.Controls.Add(this.btn3);
-            this.tabPage3.Controls.Add(this.btn2);
-            this.tabPage3.Controls.Add(this.btn1);
-            this.tabPage3.Location = new System.Drawing.Point(4, 25);
-            this.tabPage3.Name = "tabPage3";
-            this.tabPage3.Size = new System.Drawing.Size(230, 241);
-            this.tabPage3.Text = "数字";
+            this.tabPage2.Controls.Add(this.button27);
+            this.tabPage2.Controls.Add(this.button29);
+            this.tabPage2.Controls.Add(this.button30);
+            this.tabPage2.Controls.Add(this.button1);
+            this.tabPage2.Controls.Add(this.button2);
+            this.tabPage2.Controls.Add(this.button3);
+            this.tabPage2.Controls.Add(this.button4);
+            this.tabPage2.Controls.Add(this.button5);
+            this.tabPage2.Controls.Add(this.button6);
+            this.tabPage2.Controls.Add(this.button7);
+            this.tabPage2.Controls.Add(this.button8);
+            this.tabPage2.Controls.Add(this.button9);
+            this.tabPage2.Controls.Add(this.button10);
+            this.tabPage2.Controls.Add(this.button11);
+            this.tabPage2.Controls.Add(this.button12);
+            this.tabPage2.Controls.Add(this.button13);
+            this.tabPage2.Controls.Add(this.button14);
+            this.tabPage2.Controls.Add(this.button15);
+            this.tabPage2.Controls.Add(this.button16);
+            this.tabPage2.Controls.Add(this.button17);
+            this.tabPage2.Controls.Add(this.button18);
+            this.tabPage2.Controls.Add(this.button19);
+            this.tabPage2.Controls.Add(this.button20);
+            this.tabPage2.Controls.Add(this.button21);
+            this.tabPage2.Controls.Add(this.button22);
+            this.tabPage2.Controls.Add(this.button23);
+            this.tabPage2.Controls.Add(this.button24);
+            this.tabPage2.Controls.Add(this.button25);
+            this.tabPage2.Controls.Add(this.button26);
+            this.tabPage2.Location = new System.Drawing.Point(4, 25);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Size = new System.Drawing.Size(230, 241);
+            this.tabPage2.Text = "符号";
             // 
-            // btn1
+            // button27
             // 
-            this.btn1.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn1.Location = new System.Drawing.Point(42, 22);
-            this.btn1.Name = "btn1";
-            this.btn1.Size = new System.Drawing.Size(42, 42);
-            this.btn1.TabIndex = 28;
-            this.btn1.Text = "1";
-            this.btn1.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            this.button27.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.button27.Location = new System.Drawing.Point(186, 203);
+            this.button27.Name = "button27";
+            this.button27.Size = new System.Drawing.Size(42, 36);
+            this.button27.TabIndex = 82;
+            this.button27.Text = ",";
+            this.button27.Click += new System.EventHandler(this.btnKeyCodeSymbol_Click);
             // 
-            // btn2
+            // button29
             // 
-            this.btn2.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn2.Location = new System.Drawing.Point(90, 22);
-            this.btn2.Name = "btn2";
-            this.btn2.Size = new System.Drawing.Size(42, 42);
-            this.btn2.TabIndex = 29;
-            this.btn2.Text = "2";
-            this.btn2.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            this.button29.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.button29.Location = new System.Drawing.Point(140, 203);
+            this.button29.Name = "button29";
+            this.button29.Size = new System.Drawing.Size(42, 36);
+            this.button29.TabIndex = 80;
+            this.button29.Text = ">";
+            this.button29.Click += new System.EventHandler(this.btnKeyCodeSymbol_Click);
             // 
-            // btn3
+            // button30
             // 
-            this.btn3.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn3.Location = new System.Drawing.Point(138, 22);
-            this.btn3.Name = "btn3";
-            this.btn3.Size = new System.Drawing.Size(42, 42);
-            this.btn3.TabIndex = 30;
-            this.btn3.Text = "3";
-            this.btn3.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
-            // 
-            // btn6
-            // 
-            this.btn6.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn6.Location = new System.Drawing.Point(138, 70);
-            this.btn6.Name = "btn6";
-            this.btn6.Size = new System.Drawing.Size(42, 42);
-            this.btn6.TabIndex = 33;
-            this.btn6.Text = "6";
-            this.btn6.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
-            // 
-            // btn5
-            // 
-            this.btn5.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn5.Location = new System.Drawing.Point(90, 70);
-            this.btn5.Name = "btn5";
-            this.btn5.Size = new System.Drawing.Size(42, 42);
-            this.btn5.TabIndex = 32;
-            this.btn5.Text = "5";
-            this.btn5.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
-            // 
-            // btn4
-            // 
-            this.btn4.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn4.Location = new System.Drawing.Point(42, 70);
-            this.btn4.Name = "btn4";
-            this.btn4.Size = new System.Drawing.Size(42, 42);
-            this.btn4.TabIndex = 31;
-            this.btn4.Text = "4";
-            this.btn4.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
-            // 
-            // btn9
-            // 
-            this.btn9.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn9.Location = new System.Drawing.Point(138, 118);
-            this.btn9.Name = "btn9";
-            this.btn9.Size = new System.Drawing.Size(42, 42);
-            this.btn9.TabIndex = 36;
-            this.btn9.Text = "9";
-            this.btn9.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
-            // 
-            // btn8
-            // 
-            this.btn8.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn8.Location = new System.Drawing.Point(90, 118);
-            this.btn8.Name = "btn8";
-            this.btn8.Size = new System.Drawing.Size(42, 42);
-            this.btn8.TabIndex = 35;
-            this.btn8.Text = "8";
-            this.btn8.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
-            // 
-            // btn7
-            // 
-            this.btn7.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn7.Location = new System.Drawing.Point(42, 118);
-            this.btn7.Name = "btn7";
-            this.btn7.Size = new System.Drawing.Size(42, 42);
-            this.btn7.TabIndex = 34;
-            this.btn7.Text = "7";
-            this.btn7.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
-            // 
-            // btnDot
-            // 
-            this.btnDot.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btnDot.Location = new System.Drawing.Point(138, 166);
-            this.btnDot.Name = "btnDot";
-            this.btnDot.Size = new System.Drawing.Size(42, 42);
-            this.btnDot.TabIndex = 39;
-            this.btnDot.Text = ".";
-            this.btnDot.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
-            // 
-            // btn0
-            // 
-            this.btn0.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.btn0.Location = new System.Drawing.Point(90, 166);
-            this.btn0.Name = "btn0";
-            this.btn0.Size = new System.Drawing.Size(42, 42);
-            this.btn0.TabIndex = 38;
-            this.btn0.Text = "0";
-            this.btn0.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            this.button30.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.button30.Location = new System.Drawing.Point(94, 203);
+            this.button30.Name = "button30";
+            this.button30.Size = new System.Drawing.Size(42, 36);
+            this.button30.TabIndex = 79;
+            this.button30.Text = "<";
+            this.button30.Click += new System.EventHandler(this.btnKeyCodeSymbol_Click);
             // 
             // button1
             // 
@@ -845,35 +747,133 @@
             this.button26.Text = "-";
             this.button26.Click += new System.EventHandler(this.btnKeyCodeSymbol_Click);
             // 
-            // button27
+            // tabPage3
             // 
-            this.button27.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.button27.Location = new System.Drawing.Point(186, 203);
-            this.button27.Name = "button27";
-            this.button27.Size = new System.Drawing.Size(42, 36);
-            this.button27.TabIndex = 82;
-            this.button27.Text = ",";
-            this.button27.Click += new System.EventHandler(this.btnKeyCodeSymbol_Click);
+            this.tabPage3.Controls.Add(this.btnDot);
+            this.tabPage3.Controls.Add(this.btn0);
+            this.tabPage3.Controls.Add(this.btn9);
+            this.tabPage3.Controls.Add(this.btn8);
+            this.tabPage3.Controls.Add(this.btn7);
+            this.tabPage3.Controls.Add(this.btn6);
+            this.tabPage3.Controls.Add(this.btn5);
+            this.tabPage3.Controls.Add(this.btn4);
+            this.tabPage3.Controls.Add(this.btn3);
+            this.tabPage3.Controls.Add(this.btn2);
+            this.tabPage3.Controls.Add(this.btn1);
+            this.tabPage3.Location = new System.Drawing.Point(4, 25);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Size = new System.Drawing.Size(230, 241);
+            this.tabPage3.Text = "数字";
             // 
-            // button29
+            // btnDot
             // 
-            this.button29.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.button29.Location = new System.Drawing.Point(140, 203);
-            this.button29.Name = "button29";
-            this.button29.Size = new System.Drawing.Size(42, 36);
-            this.button29.TabIndex = 80;
-            this.button29.Text = ">";
-            this.button29.Click += new System.EventHandler(this.btnKeyCodeSymbol_Click);
+            this.btnDot.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btnDot.Location = new System.Drawing.Point(138, 166);
+            this.btnDot.Name = "btnDot";
+            this.btnDot.Size = new System.Drawing.Size(42, 42);
+            this.btnDot.TabIndex = 39;
+            this.btnDot.Text = ".";
+            this.btnDot.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
             // 
-            // button30
+            // btn0
             // 
-            this.button30.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
-            this.button30.Location = new System.Drawing.Point(94, 203);
-            this.button30.Name = "button30";
-            this.button30.Size = new System.Drawing.Size(42, 36);
-            this.button30.TabIndex = 79;
-            this.button30.Text = "<";
-            this.button30.Click += new System.EventHandler(this.btnKeyCodeSymbol_Click);
+            this.btn0.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn0.Location = new System.Drawing.Point(90, 166);
+            this.btn0.Name = "btn0";
+            this.btn0.Size = new System.Drawing.Size(42, 42);
+            this.btn0.TabIndex = 38;
+            this.btn0.Text = "0";
+            this.btn0.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            // 
+            // btn9
+            // 
+            this.btn9.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn9.Location = new System.Drawing.Point(138, 118);
+            this.btn9.Name = "btn9";
+            this.btn9.Size = new System.Drawing.Size(42, 42);
+            this.btn9.TabIndex = 36;
+            this.btn9.Text = "9";
+            this.btn9.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            // 
+            // btn8
+            // 
+            this.btn8.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn8.Location = new System.Drawing.Point(90, 118);
+            this.btn8.Name = "btn8";
+            this.btn8.Size = new System.Drawing.Size(42, 42);
+            this.btn8.TabIndex = 35;
+            this.btn8.Text = "8";
+            this.btn8.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            // 
+            // btn7
+            // 
+            this.btn7.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn7.Location = new System.Drawing.Point(42, 118);
+            this.btn7.Name = "btn7";
+            this.btn7.Size = new System.Drawing.Size(42, 42);
+            this.btn7.TabIndex = 34;
+            this.btn7.Text = "7";
+            this.btn7.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            // 
+            // btn6
+            // 
+            this.btn6.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn6.Location = new System.Drawing.Point(138, 70);
+            this.btn6.Name = "btn6";
+            this.btn6.Size = new System.Drawing.Size(42, 42);
+            this.btn6.TabIndex = 33;
+            this.btn6.Text = "6";
+            this.btn6.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            // 
+            // btn5
+            // 
+            this.btn5.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn5.Location = new System.Drawing.Point(90, 70);
+            this.btn5.Name = "btn5";
+            this.btn5.Size = new System.Drawing.Size(42, 42);
+            this.btn5.TabIndex = 32;
+            this.btn5.Text = "5";
+            this.btn5.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            // 
+            // btn4
+            // 
+            this.btn4.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn4.Location = new System.Drawing.Point(42, 70);
+            this.btn4.Name = "btn4";
+            this.btn4.Size = new System.Drawing.Size(42, 42);
+            this.btn4.TabIndex = 31;
+            this.btn4.Text = "4";
+            this.btn4.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            // 
+            // btn3
+            // 
+            this.btn3.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn3.Location = new System.Drawing.Point(138, 22);
+            this.btn3.Name = "btn3";
+            this.btn3.Size = new System.Drawing.Size(42, 42);
+            this.btn3.TabIndex = 30;
+            this.btn3.Text = "3";
+            this.btn3.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            // 
+            // btn2
+            // 
+            this.btn2.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn2.Location = new System.Drawing.Point(90, 22);
+            this.btn2.Name = "btn2";
+            this.btn2.Size = new System.Drawing.Size(42, 42);
+            this.btn2.TabIndex = 29;
+            this.btn2.Text = "2";
+            this.btn2.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
+            // 
+            // btn1
+            // 
+            this.btn1.Font = new System.Drawing.Font("Tahoma", 14F, System.Drawing.FontStyle.Bold);
+            this.btn1.Location = new System.Drawing.Point(42, 22);
+            this.btn1.Name = "btn1";
+            this.btn1.Size = new System.Drawing.Size(42, 42);
+            this.btn1.TabIndex = 28;
+            this.btn1.Text = "1";
+            this.btn1.Click += new System.EventHandler(this.btnKeyCodeNumber_Click);
             // 
             // Alphabet
             // 
@@ -884,6 +884,7 @@
             this.Controls.Add(this.tabControl1);
             this.Name = "Alphabet";
             this.Text = "字母键盘";
+            this.GotFocus += new System.EventHandler(this.Alphabet_GotFocus);
             this.tabControl1.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);

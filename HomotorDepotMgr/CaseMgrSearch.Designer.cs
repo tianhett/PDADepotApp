@@ -91,6 +91,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CaseMgrSearch";
             this.Text = "箱号搜索";
+            this.GotFocus += new System.EventHandler(this.CaseMgrSearch_GotFocus);
             this.ResumeLayout(false);
 
         }

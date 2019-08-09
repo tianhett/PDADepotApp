@@ -165,6 +165,7 @@
             this.Text = "配件明细编辑";
             this.Deactivate += new System.EventHandler(this.CaseDetailMgrEdit_Deactivate);
             this.Activated += new System.EventHandler(this.CaseDetailMgrEdit_Activated);
+            this.GotFocus += new System.EventHandler(this.CaseDetailMgrEdit_GotFocus);
             this.ResumeLayout(false);
 
         }

@@ -26,6 +26,11 @@ namespace HomotorDepotMgr
             hkAlphabet.Start();
         }
 
+        private void Alphabet_GotFocus(object sender, EventArgs e)
+        {
+            //hkAlphabet.Start();
+        }
+
         int hkAlphabet_KeyHandlerDelegate(int vkCode, string clsName)
         {
             if (clsName.Equals("Alphabet"))

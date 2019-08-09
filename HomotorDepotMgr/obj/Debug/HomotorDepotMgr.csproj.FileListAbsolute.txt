@@ -45,3 +45,4 @@ D:\WinCEApp\HomotorDepotMgr\HomotorDepotMgr\obj\Debug\HomotorDepotMgr.CaseDetail
 D:\WinCEApp\HomotorDepotMgr\HomotorDepotMgr\obj\Debug\HomotorDepotMgr.CaseDetailMgrModelAdd.resources
 D:\WinCEApp\HomotorDepotMgr\HomotorDepotMgr\obj\Debug\HomotorDepotMgr.CaseDetailMgrModelAddSearch.resources
 D:\WinCEApp\HomotorDepotMgr\HomotorDepotMgr\obj\Debug\HomotorDepotMgr.AlphabetComplex.resources
+D:\WinCEApp\HomotorDepotMgr\HomotorDepotMgr\obj\Debug\HomotorDepotMgr.CaseDetailMgrWholeCaseAdd.resources

@@ -39,6 +39,11 @@ namespace HomotorDepotMgr
             ReloadCaseDetailData(caseNumberID);
         }
 
+        private void CaseDetailMgr_GotFocus(object sender, EventArgs e)
+        {
+            //hkCaseDetailMgr.Start();
+        }
+
         int hkCaseDetailMgr_KeyHandlerDelegate(int vkCode, string clsName)
         {
             int result = 0;

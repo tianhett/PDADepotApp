@@ -80,6 +80,7 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "CaseDetailMgrSearch";
             this.Text = "配件明细搜索";
+            this.GotFocus += new System.EventHandler(this.CaseDetailMgrSearch_GotFocus);
             this.ResumeLayout(false);
 
         }
