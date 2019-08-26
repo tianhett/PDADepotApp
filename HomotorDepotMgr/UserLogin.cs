@@ -35,6 +35,13 @@ namespace HomotorDepotMgr
             hkUserLogin.KeyHandlerDelegate += new Hook.KeyHandler(hkUserLogin_KeyHandlerDelegate);
             hkUserLogin.Start();
             LoadLoginInfo();
+            //testLogin();
+        }
+
+        private void testLogin()
+        {
+            cboUname.Text = "18620730058";
+            txtPwd.Text = "201611";
         }
 
         private void UserLogin_GotFocus(object sender, EventArgs e)

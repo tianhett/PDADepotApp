@@ -96,6 +96,11 @@ namespace HomotorDepotMgr
                     CaseDetailEditDeleteHandler();
                     return -1;
                 }
+                if (vkCode == VirtualKey.VK_F7)
+                {
+                    GlobalShare.ContinuousScan();
+                    return -1;
+                }
             }
             return 0;
         }

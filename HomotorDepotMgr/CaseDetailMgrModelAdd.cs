@@ -45,10 +45,11 @@ namespace HomotorDepotMgr
             {
                 string sql = string.Empty;
                 List<SQLiteParameter> parameters = new List<SQLiteParameter>();
-                sql = @"select * from FromERPDetail where Model=@Model";
-                parameters = new List<SQLiteParameter>() {
-                    new SQLiteParameter("@Model", model.Trim())
-                };
+                //sql = "select * from FromERPDetail where Model like '%'+@Model+'%'";
+                //parameters = new List<SQLiteParameter>() {
+                //    new SQLiteParameter("@Model", model.Trim())
+                //};
+                sql = "select * from FromERPDetail where Model like '%" + model.Trim() + "%'";
                 DataTable partsDt = db.ExecuteDataTable(sql, parameters.ToArray());
                 if (partsDt != null && partsDt.Rows.Count > 0)
                 {

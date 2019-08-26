@@ -10,6 +10,7 @@ using System.Runtime.InteropServices;
 using HomotorDepotMgr.Utility;
 using System.Data.SQLite;
 using SCAN.Scanner2D;
+using System.Threading;
 
 namespace HomotorDepotMgr
 {
@@ -83,7 +84,7 @@ namespace HomotorDepotMgr
                 if (wholeCase)
                 {
                     hkCaseMgr.Stop();
-                    CaseDetailMgrWholeCaseAdd detailAddFrm = new CaseDetailMgrWholeCaseAdd( obj.barcode);
+                    CaseDetailMgrWholeCaseAdd detailAddFrm = new CaseDetailMgrWholeCaseAdd(obj.barcode);
                     detailAddFrm.GetCaseDetailMgrWholeCaseAddDelegate += new CaseDetailMgrWholeCaseAdd.GetCaseDetailMgrWholeCaseAdd(detailAddFrm_GetCaseDetailMgrWholeCaseAddDelegate);
                     detailAddFrm.Show();
                 }
@@ -212,10 +213,15 @@ namespace HomotorDepotMgr
                         }
                         result = -1;
                         break;
+                    case VirtualKey.VK_F7:
+                        GlobalShare.ContinuousScan();
+                        result = -1;
+                        break;
                 }
             }
             return result;
         }
+
 
         #region 按下数字键，弹出箱号搜索框
         public void KeyPressHandler(string keyStr)

@@ -347,6 +347,7 @@
     <Compile Include="CaseDetailMgrWholeCaseAdd.Designer.cs">
       <DependentUpon>CaseDetailMgrWholeCaseAdd.cs</DependentUpon>
     </Compile>
+    <Compile Include="Utility\MutexHelper.cs" />
     <None Include="appDB.db">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

@@ -21,5 +21,6 @@ namespace HomotorDepotMgr.Model
         public string ProdID { get; set; }
         public string Title { get; set; }
         public string bJianMaInBox { get; set; }
+        public string AreaPlaceCode { get; set; }
     }
 }

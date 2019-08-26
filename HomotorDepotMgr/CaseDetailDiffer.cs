@@ -52,24 +52,24 @@ namespace HomotorDepotMgr
 
         public void ReloadDifferData()
         {
-            string sql = @"select v.ProdName as 名称,v.Model as 型号,v.yNum as 应发,v.sNum as 数量 from (
-            select a.ProdName,a.Model,a.Num as yNum,ifnull(b.Num,0) as sNum,a.Num-ifnull(b.Num,0) as balance from FromERPDetail a left outer join 
+            string sql = @"select v.ProdName as 名称,v.Model as 型号,v.yNum as 应发,v.sNum as 数量,v.AreaPlaceCode as 仓位 from (
+            select a.ProdName,a.Model,a.Num as yNum,ifnull(b.Num,0) as sNum,a.Num-ifnull(b.Num,0) as balance,ifnull(a.AreaPlaceCode,'') as AreaPlaceCode from FromERPDetail a left outer join 
             (select ProdID,SUM(Num) as Num from CaseNumberDetail group by ProdID) b on a.ProdID=b.ProdID
             ) v where v.balance<>0 order by v.ProdName";
             try
             {
                 DataTable dt = db.ExecuteDataTable(sql, null);
                 DataGridTableStyle ts = new DataGridTableStyle();
-                ts.MappingName = dt.TableName;
+                ts.MappingName = dt.TableName; 
                 DataGridColumnStyle MCColStyle = new DataGridTextBoxColumn();
                 MCColStyle.MappingName = "名称";
                 MCColStyle.HeaderText = "名称";
-                MCColStyle.Width = 90;
+                MCColStyle.Width = 60;
                 ts.GridColumnStyles.Add(MCColStyle);
                 DataGridColumnStyle XHColStyle = new DataGridTextBoxColumn();
                 XHColStyle.MappingName = "型号";
                 XHColStyle.HeaderText = "型号";
-                XHColStyle.Width = 70;
+                XHColStyle.Width = 60;
                 ts.GridColumnStyles.Add(XHColStyle);
                 DataGridColumnStyle YFColStyle = new DataGridTextBoxColumn();
                 YFColStyle.MappingName = "应发";
@@ -81,6 +81,11 @@ namespace HomotorDepotMgr
                 SLColStyle.HeaderText = "数量";
                 SLColStyle.Width = 30;
                 ts.GridColumnStyles.Add(SLColStyle);
+                DataGridColumnStyle CWColStyle = new DataGridTextBoxColumn();
+                CWColStyle.MappingName = "仓位";
+                CWColStyle.HeaderText = "仓位";
+                CWColStyle.Width = 60;
+                ts.GridColumnStyles.Add(CWColStyle);
                 CreateNewCaseDetailGrid();
                 dgDifferList.TableStyles.Add(ts);
                 dgDifferList.DataSource = null;
